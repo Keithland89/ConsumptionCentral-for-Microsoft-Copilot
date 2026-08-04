@@ -153,9 +153,26 @@ instead of forecasting a cliff.
 1. Local CSV/        the simplest path — CSVs on disk or a synced folder
 2. Fabric/           notebooks + Lakehouse + scheduled refresh
 3. Viva Direct/      the certified Viva Insights connector (experimental)
-docs/                data source schemas, measure reference, troubleshooting
+docs/                data sources, measures, build steps, testing
 Images/              screenshots
 ```
+
+## ✅ Status
+
+This is a **first scaffold**. Before it goes public:
+
+| | |
+|---|---|
+| Model — 27 tables, 284 measures, 14 pages | ✅ Built and validated |
+| Both Viva export shapes (identified / de-identified) | ✅ Tested against real files |
+| Commercial terms parameterised | ✅ Verified by flexing rates |
+| No hardcoded figures in any card or headline | ✅ Audited |
+| Documentation, cited | ✅ |
+| `.pbit` files | ⏳ [docs/BUILD.md](docs/BUILD.md) |
+| Viva connector path | ❓ [test procedure](3.%20Viva%20Direct/TEST-PROCEDURE.md) |
+| GitHub API ingester | ⏳ Written, needs a live enterprise to confirm |
+
+**→ [docs/TESTING.md](docs/TESTING.md)** has the steps for everything still open.
 
 ---
 
