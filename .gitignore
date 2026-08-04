@@ -1,0 +1,39 @@
+# Power BI Desktop
+*.pbix
+*.pbip.tmp
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Data — never commit a real export
+Data/
+*Identified*.zip
+ConsumptionDashboard-*.zip
+PersonServiceCreditsMetrics.csv
+PeopleMetaData.csv
+PersonPolicyMap.csv
+SpendingPolicyMetadata.csv
+StudioTenantDaily.csv
+StudioPerAgent.csv
+StudioPerUser.csv
+GitHubAiUsage.csv
+GitHubUserMap.csv
+entra_org.csv
+
+# ...but the synthetic sample set is meant to be here
+!1. Local CSV/sample-data/*.csv
+
+# OS / editor
+Thumbs.db
+.DS_Store
+desktop.ini
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Fabric notebook checkpoints
+.ipynb_checkpoints/

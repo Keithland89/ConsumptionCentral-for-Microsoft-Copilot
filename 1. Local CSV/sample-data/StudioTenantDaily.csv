@@ -1,0 +1,32 @@
+BillingPlan Id,BillingPlan Name,Environment Id,Environment Name,Capacity Type,Entitled Quantity,Prepaid Consumed Quantity,Pay as you go Consumed Quantity,Usage Date
+00000000-0000-0000-0000-000000000000,,2c6ff609-a6e6-a439-b845-ca10bf279d55,Care Plan Test,MCSMessages,0,7,0,4/14/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,1000,11,0,4/14/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,519a90c4-988a-8ddc-a083-82ed1d4b4c2f,Governance and Risk,MCSMessages,0,0,0,4/14/2026 12:00:00 AM
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,261,4/14/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,7420.9,0,4/14/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,6933.3,0,4/15/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,1000,18,0,4/15/2026 12:00:00 AM
+00000000-0000-0000-0000-000000000000,,2c6ff609-a6e6-a439-b845-ca10bf279d55,Care Plan Test,MCSMessages,0,8,0,4/15/2026 12:00:00 AM
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,521,05-05-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,164,05-06-2026 00:00
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,5000,137.76999999999998,0,05-06-2026 00:00
+00000000-0000-0000-0000-000000000000,,fa96832a-94a4-5fab-31e5-40a67fd4934d,Ask Contoso Test,MCSMessages,0,3,0,05-06-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,230,0,05-06-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,260,0,05-07-2026 00:00
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,5000,230.13,0,05-07-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,367,05-07-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,313,05-08-2026 00:00
+00000000-0000-0000-0000-000000000000,,a4c99868-cac2-3071-ab35-0b4db5e8597b,Regulatory Reporting,MCSMessages,0,10,0,05-08-2026 00:00
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,5000,329,0,05-08-2026 00:00
+00000000-0000-0000-0000-000000000000,,5d84cd68-233e-eafc-6362-a8d9e1b85a89,Virtual Agent Test,MCSMessages,0,0.39,0,05-08-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,230,0,05-08-2026 00:00
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,5000,198,0,05-09-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,23,05-09-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,448.4,0,05-09-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,1547.6,0,05-10-2026 00:00
+00000000-0000-0000-0000-000000000000,,6f51de55-47d7-4474-a0f6-8efb83d96b7f,Copilot Agents - Dev,MCSMessages,0,10,0,05-10-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,34,05-10-2026 00:00
+4cbe8b19-aa32-4c11-a71d-e40fb94f6b77,agenticAIProd,9405eda7-4312-9de9-2f2e-9a48773f067c,AI Centre of Excellence - Prod,MCSMessages,0,0,99,05-11-2026 00:00
+00000000-0000-0000-0000-000000000000,,fa96832a-94a4-5fab-31e5-40a67fd4934d,Ask Contoso Test,MCSMessages,0,3,0,05-11-2026 00:00
+00000000-0000-0000-0000-000000000000,,e58bbcb4-8196-dfa5-04d8-72de6622fc66,AI Centre of Excellence - Test,MCSMessages,5000,24.13,0,05-11-2026 00:00
+00000000-0000-0000-0000-000000000000,,9ecc0d7f-5b09-639a-e5ae-c635a2b1f909,Personal productivity (default),MCSMessages,0,3752.7,0,05-11-2026 00:00

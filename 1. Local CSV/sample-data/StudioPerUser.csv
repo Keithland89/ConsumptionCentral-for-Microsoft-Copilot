@@ -1,0 +1,30 @@
+User Id,User Email,Agent Id,Agent Name,Billable credit used,Credits used,M365 Copilot Licensed
+6c6c3f07-03c4-6db4-27ec-b11acd03e546,lavinia.farquharson0392@contoso-health.com,3ebdb505-3365-d2ba-3512-de704012850a,Policy Document Analyser,0,19,TRUE
+5ef9f0e3-ddce-0678-1b02-62e018391e43,orlando.quiller0409@contoso-health.com,081671c4-405b-62c8-d205-f6d841671ec0,Formulary Lookup,11,11,FALSE
+82a8464e-eb3e-90d4-3a41-4543bcb38359,tobias.quibell0281@contoso-health.com,70efd379-177d-26b7-448a-38cca05d9780,Care Plan Orchestrator,6,6,FALSE
+6c1f7582-024a-f13d-e990-beee18f1867a,adelaide.kettering0247@contoso-health.com,8bc876b1-a02c-af0d-c3b8-11f3590057df,Inbox Triage Assistant,0,185,TRUE
+6c1f7582-024a-f13d-e990-beee18f1867a,adelaide.kettering0247@contoso-health.com,0624d166-49db-5112-baa5-b93491b74c8c,Daily Inbox Digest,0,235,TRUE
+eaa389b1-4205-392e-216f-23358d3078b9,valentine.wainwright0652@contoso-health.com,0ef1ad3d-d78f-275e-531e-7667c6930c1b,Compliance Review,0,5,FALSE
+daf8cff8-ea9c-bda4-c070-ae903fc784e5,rosalind.bickerstaff0519@contoso-health.com,e2f75132-db48-3f27-ea1b-7a45a77243dd,Platform Help Desk,0,9,TRUE
+0eddf050-34e0-6459-2066-714b106830a6,susannah.hetherington0390@contoso-health.com,e5170150-ee4e-823d-d335-c89b813d85c6,Ask Broadband,0,7,TRUE
+4e8f9bb0-9f28-e79e-6cfb-7bb9561da9a7,millicent.cholmondeley0691@contoso-health.com,e5170150-ee4e-823d-d335-c89b813d85c6,Ask Broadband,14,14,FALSE
+46bdbaca-699a-470d-f69f-553f003df584,juliet.shackleton0289@contoso-health.com,03656a8b-9645-86d4-fc91-2f0ad8c043d2,Al-Bot,20,20,FALSE
+0904ae4d-9ff9-fea0-a26e-f7fbd2631385,isadora.jellicoe0252@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,0,32,TRUE
+0904ae4d-9ff9-fea0-a26e-f7fbd2631385,isadora.jellicoe0252@contoso-health.com,72619513-6a47-4ced-21a7-8d9d44e96a71,ESS HR,0,10,TRUE
+0904ae4d-9ff9-fea0-a26e-f7fbd2631385,isadora.jellicoe0252@contoso-health.com,fa6996db-bb1a-3853-021f-2bed0a4cf949,ESS IT,0,1,TRUE
+c7acceba-d5f6-1c91-3311-6c4dfd69ecf4,helena.higginbotham0381@contoso-health.com,2a0649f4-416e-b454-a0b2-f3ccb4e8269d,Care Navigator,66,66,FALSE
+b7ab7754-2855-eb00-e6af-19130f171440,wilhelmina.underhill0550@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,5,5,FALSE
+7b06dba9-e213-2600-2ed2-c297a0fd5fe5,delilah.braithwaite0377@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,0,72,TRUE
+7b06dba9-e213-2600-2ed2-c297a0fd5fe5,delilah.braithwaite0377@contoso-health.com,03656a8b-9645-86d4-fc91-2f0ad8c043d2,Al-Bot,0,8,TRUE
+7b06dba9-e213-2600-2ed2-c297a0fd5fe5,delilah.braithwaite0377@contoso-health.com,fa6996db-bb1a-3853-021f-2bed0a4cf949,ESS IT,0,17,TRUE
+131f30d3-0e15-dbb4-d5ca-f9ac5c5a5fff,callista.knatchbull0445@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,0,125,TRUE
+131f30d3-0e15-dbb4-d5ca-f9ac5c5a5fff,callista.knatchbull0445@contoso-health.com,fa6996db-bb1a-3853-021f-2bed0a4cf949,ESS IT,0,28,TRUE
+3478b0a5-a89b-db3d-ba9c-ddf07a30002b,florence.foxcroft0223@contoso-health.com,e5170150-ee4e-823d-d335-c89b813d85c6,Ask Broadband,0,69,TRUE
+de397059-65a2-798b-0d39-e6d789a34749,ernest.chesterton0287@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,0,57,TRUE
+de397059-65a2-798b-0d39-e6d789a34749,ernest.chesterton0287@contoso-health.com,72619513-6a47-4ced-21a7-8d9d44e96a71,ESS HR,0,13,TRUE
+de397059-65a2-798b-0d39-e6d789a34749,ernest.chesterton0287@contoso-health.com,fa6996db-bb1a-3853-021f-2bed0a4cf949,ESS IT,0,7,TRUE
+7022ea15-fcad-7bdc-4f7a-07a2798698a2,prudence.beauchamp0535@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,0,8,TRUE
+7022ea15-fcad-7bdc-4f7a-07a2798698a2,prudence.beauchamp0535@contoso-health.com,72619513-6a47-4ced-21a7-8d9d44e96a71,ESS HR,0,2,TRUE
+cfc61e0e-1448-dd42-a3b9-afe215b0444b,aurelia.redmayne0179@contoso-health.com,b6bcfdf4-8b46-2b5f-2ff9-ed7cc3c2f86e,Ask Contoso,75,75,FALSE
+cfc61e0e-1448-dd42-a3b9-afe215b0444b,aurelia.redmayne0179@contoso-health.com,72619513-6a47-4ced-21a7-8d9d44e96a71,ESS HR,0,118,FALSE
+e04b7012-2f15-9ebb-97c9-f7f221b0de81,nolan.ashdown0855@contoso-health.com,e5170150-ee4e-823d-d335-c89b813d85c6,Ask Broadband,0,12,TRUE
