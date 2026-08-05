@@ -8,33 +8,39 @@ useful.
 
 ---
 
-## Test 1 — Does the Viva connector carry credit data? *(10 min)*
+## Test 1 — Does the Viva connector work in your tenant? *(10 min)*
 
-**The big one.** If yes, path 3 becomes the best of the three. If no, we delete the folder and stop
-suggesting it.
+**The big one.** The connection is confirmed to exist — the Consumption Dashboard's own **Connect
+data** dialog publishes a Partition and Query identifier for exactly this. What is unproven is
+whether a given tenant can use it: our first attempt returned **access forbidden**, which looks like
+the Analyst role or connector access rather than anything in the connection itself.
 
 Full procedure: **[3. Viva Direct/TEST-PROCEDURE.md](../3.%20Viva%20Direct/TEST-PROCEDURE.md)**
 
 The short version:
 
-1. Viva Insights → **Analysis results** → **Link** icon on a query → copy **Partition Identifier**
-   and **Query Identifiers**
+1. <https://analysis.insights.cloud.microsoft> → **Consumption Dashboard** → download icon →
+   **Connect data** → **Power BI** tab → copy both identifiers
 2. Power BI Desktop → **Get Data** → **Online Services** → **Viva Insights**
-3. Paste both. Leave **Query Name** blank. Under Advanced set **Pivoted** + **Row-level data**,
+3. Paste both. Leave **Query Name** blank. Advanced: **Pivoted** + **Row-level data**,
    connectivity **Import**
 4. **Stop at the Navigator preview and read the column list.** Do not load yet.
 
 | You see | Verdict |
 |---|---|
 | `ServiceName`, `SpendingPolicyId`, `MetricDate`, a credits column | ✅ It works |
-| Only `Meeting_hours`, `Email_hours`, `Focus_hours`, `Collaboration_hours` | ❌ Analyst Workbench only |
-| Something else | 🤔 Paste the full column list into the issue |
+| Access forbidden | ⚠️ Permission — check the Analyst role, then retry |
+| Only `Meeting_hours`, `Email_hours`, `Focus_hours` | ❌ Wrong query — you have connected to an Analyst Workbench result |
 
 If it works, load it and check the grain — `rows` should be roughly `people × dates`. If `rows`
 equals `people`, the Advanced settings didn't take and you have an aggregate.
 
-Also worth noting: **how far back does it go?** The file export gives 6 months. If the connector
-reaches further, that weakens the case for the Fabric path considerably.
+Also worth noting: **how far back does it go?** The file export gives five complete months plus
+month-to-date. If the connector reaches further, that weakens the case for the Fabric path
+considerably.
+
+**A model is already wired for this** at `CreditLens-VivaDirect` — two parameters, `VivaPartitionId`
+and `VivaQueryId`. Once access is sorted, paste and refresh.
 
 ---
 
@@ -115,13 +121,16 @@ Steps: **[docs/BUILD.md](BUILD.md)**
 
 The part that matters most:
 
-- [ ] Reset all ten path parameters to the sample-data folder
-- [ ] Reset commercial terms to defaults — `0.01`, `0.008`, `19`, `39`, `1900`, `3900`, `2026-09-01`
+- [ ] Reset `DataFolder` to the neutral placeholder `C:\CreditLens\Data`
+- [ ] Reset the six commercial parameters — `0.01`, `0.008`, `0`, `19`, `39`, `4`
+- [ ] Check the Settings query still holds `#date(2026, 9, 1)`, `1900`, `3900`
 - [ ] **File → Export → Power BI template**
-- [ ] Open the exported `.pbit` fresh, point it at `sample-data/`, confirm all 14 pages render
+- [ ] Open the exported `.pbit` fresh, point `DataFolder` at `sample-data/`, confirm all 14 pages render
+- [ ] Then hide everything except `PersonServiceCreditsMetrics.csv` and refresh again — Cowork should
+      still be right and the other pages should be empty rather than broken
 
-**A `.pbit` stores parameter defaults.** If the paths still point at your OneDrive, or the rates are
-a customer's real ones, that ships with the file. This is the step to be careful about.
+**A `.pbit` stores parameter defaults.** If `DataFolder` still points at your OneDrive, or the rates
+are a customer's real ones, that ships with the file. This is the step to be careful about.
 
 ---
 

@@ -19,16 +19,24 @@ The main source. Person × week credit consumption for the usage-based-billing C
 
 | | |
 |---|---|
-| **Portal** | <https://analysis.insights.viva.office.com> |
-| **Path** | Viva Insights web app → **Consumption Dashboard** → export |
+| **Portal** | <https://analysis.insights.cloud.microsoft> |
+| **Path** | Insights web app → **Consumption Dashboard** (left nav) → the **download** icon, top right |
 | **Role** | Global Administrator, **or** Viva Insights Analyst with global partition access |
 | **Licence** | 50+ assigned Viva Insights licences, or 1+ Copilot licence including the Viva Insights service plan |
 
-> ⚠️ **Partially verified.** The Consumption Dashboard is confirmed as a named component of the Viva
-> Insights web app ([manage-settings-copilot-dashboard][s1a], updated 2026-08-03), but Microsoft has
-> not yet published a dedicated page for *its* export. The exact left-nav label and export button
-> wording should be confirmed in your own portal. The closely-related Copilot Dashboard export is
-> documented at [export-copilot-metrics][s1b].
+The export dialog offers **Export by week** or **Export by day**, and then two ways to take the data:
+
+| Button | What it does |
+|---|---|
+| **Export to CSV** | Downloads a ZIP. This is what paths [1](../1.%20Local%20CSV/) and [2](../2.%20Fabric/) use. |
+| **Connect data** | Gives a **Partition identifier** and **Query identifier** for a live connection, under either a **Power BI** or a **Microsoft Fabric** tab. See [path 3](../3.%20Viva%20Direct/). |
+
+A banner in the dialog says **"Includes user identifiers"** when identifiable export is enabled for
+you. That is the quickest way to tell which shape you are about to get.
+
+> The Consumption Dashboard is a preview feature and Microsoft has not yet published a dedicated
+> page for its export. The steps above are from the live portal (checked 2026-08-04). The related
+> Fabric route is documented at [export-query-data-microsoft-fabric][s1f].
 
 ### Identified vs de-identified
 
@@ -39,37 +47,42 @@ This matters, and it changes which files you get.
 | **Identified** | Real `UserPrincipalName` + `EntraId` | — |
 | **De-identified** | Anonymised `PersonId` | `PeopleMetaData.csv`, `PersonPolicyMap.csv` |
 
-De-identified is the **default**. An administrator must explicitly enable identifiable export, per
-user or tenant-wide, through Viva Feature Access Management.
+De-identified is the **default**. Turning on identifiable export is a Global Admin job:
 
-> *"Personal identifiers are removed and replaced with anonymized IDs, unless your administrator has
-> enabled identifiable export for you."* — [export-copilot-metrics][s1b], updated 2026-08-03
+**Microsoft 365 admin center → Settings → Viva → Settings tab → Feature access management**
 
-> ⚠️ **Could not verify** the exact VFAM policy name that enables it. Check Feature Access Management
-> in the Viva Insights admin settings, or ask Microsoft support quoting the sentence above.
->
-> ⚠️ **Inferred, not confirmed:** that `PeopleMetaData.csv` and `PersonPolicyMap.csv` come only with
-> the de-identified export. It is the logical reading — in the identified export the identity is
-> inline, so a separate map is redundant — and it matches the exports we have seen. **CreditLens
-> handles both cases automatically either way**, so you do not need to resolve this before starting.
+Create or edit a policy with:
+
+| Field | Value |
+|---|---|
+| App | **Viva Insights** |
+| Feature | **Identifiable Export** |
+| Access setting | **On** |
+| Applies to | Everyone, or a named group |
+
+*(Verified in the portal 2026-08-04. The docs describe the behaviour — "personal identifiers are
+removed and replaced with anonymized IDs, unless your administrator has enabled identifiable export
+for you" — but not this click-path.)*
 
 **Identifiable export is a public preview that processes personal data.** Read the "Previews" section
 of the Data Protection Addendum, and check whether per-person reporting needs works-council consent
 in your jurisdiction, before you turn it on.
 
+**CreditLens handles both shapes automatically** — you do not need to decide before starting.
+
 ### Grain and history
 
 | Export | Grain | Covers | Freshness |
 |---|---|---|---|
-| **Weekly** | Week (Sun–Sat, completed weeks only) | Last 6 months | Up to 6 days old |
-| **Daily** | Day | Last 28 days | Up to 3 days old |
+| **Weekly** | Week | Previous **5 complete months** plus month-to-date | Activity 2–8 days before export |
+| **Daily** | Day | Start of the previous month to the export date | Activity up to 2 days before |
 
-Use **weekly** for CreditLens. Every Cowork page is built on weekly grain, the forecast fits its
-trend across whatever weeks you load, and 6 months beats 28 days for that.
+Use **weekly** for CreditLens. Every Cowork page is built on weekly grain, and the forecast fits its
+trend across whatever weeks you load.
 
-There is **no scheduled export and no API** — each run is a point-in-time ZIP download. That is the
+There is **no scheduled CSV export and no API** — each run is a point-in-time download. That is the
 single best reason to move to the [Fabric path](../2.%20Fabric/), which accumulates history beyond
-the 6-month window.
+the window the export itself can reach.
 
 ### Files and columns
 
@@ -358,6 +371,7 @@ If you need the full entitled roster, supply the map files from a de-identified 
 [s1c]: https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-manage-copilot-credits
 [s1d]: https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/
 [s1e]: https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits
+[s1f]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
 [s2a]: https://learn.microsoft.com/en-us/power-platform/admin/manage-copilot-studio-messages-capacity
 [s3a]: https://docs.github.com/en/billing/how-tos/products/view-productlicense-use
 [s3b]: https://docs.github.com/en/billing/reference/billing-reports
@@ -373,6 +387,7 @@ If you need the full entitled roster, supply the map files from a de-identified 
 | s1c | [Manage Copilot Credits][s1c] | 2026-07-30 |
 | s1d | [Microsoft 365 Copilot Cowork][s1d] | 2026-07-27 |
 | s1e | [Usage-based billing overview][s1e] | 2026-07-30 |
+| s1f | [Export query data to Microsoft Fabric][s1f] | 2026-03-06 |
 | s2a | [Manage Copilot Studio capacity][s2a] | 2026-08-04 |
 | s3a | [View product and license use][s3a] | 2026-08-04 |
 | s3b | [Billing reports reference][s3b] | 2026-08-04 |

@@ -1,70 +1,100 @@
-# 3. Viva Direct *(experimental — read this before you start)*
+# 3. Viva Direct
 
-Connect straight to Viva Insights through the certified Power BI connector, with no file handling
-at all.
-
----
-
-## ⚠️ Start here
-
-**This path is not confirmed to work for credit consumption data.** Please read that sentence again
-before you spend an afternoon on it.
-
-Here is exactly what is and is not known:
-
-**Verified.** Microsoft ships a certified first-party **Viva Insights** connector in Power BI Desktop
-under *Get Data → Online Services*. It connects to **Analyst Workbench query results** using a
-Partition Identifier and Query Identifiers. It supports scheduled refresh. This is all documented.
-([power-bi-connector][c1], updated 2026-04-25)
-
-**Not verified.** Whether the connector exposes the **Consumption Dashboard** credit data —
-`PersonServiceCreditsMetrics` and friends — at all. The connector documentation describes Analyst
-Workbench collaboration queries. It does not mention credit consumption. The consumption export may
-well be download-only.
-
-**Why we shipped the folder anyway.** You asked for it, the connector plainly exists, and if it does
-carry credit data this is the best of the three paths — no files, no notebooks, native scheduled
-refresh. It is worth ten minutes to find out. But we are not going to write confident instructions
-for something we have not seen work.
-
-**→ [TEST-PROCEDURE.md](TEST-PROCEDURE.md) makes the test decisive.** Ten minutes, and you will know
-for certain which way it falls.
-
-**If it turns out not to carry credit data**, use **[2. Fabric](../2.%20Fabric/)** for automation or
-**[1. Local CSV](../1.%20Local%20CSV/)** to get going quickly. Please
-[open an issue](../../issues) either way — a definitive answer helps everyone.
+Connect straight to the Consumption Dashboard through the certified Viva Insights connector — no
+files, no notebooks, native scheduled refresh.
 
 ---
 
-## How to find out in ten minutes
+## Status: confirmed to exist, not yet confirmed to work
 
-1. Run a query in Viva Insights that you believe contains credit consumption data.
-2. Open Power BI Desktop → **Get Data** → **Online Services** → **Viva Insights** → **Connect**.
-3. In Viva Insights, go to **Analysis results** and click the **Link** icon next to your query. That
-   gives you the **Partition Identifier** and **Query Identifiers**.
-4. Paste both into the connector dialog. Leave **Query Name** blank.
-5. Under **Advanced**, set:
-   - **Schema type** → **Pivoted** *(Unpivoted is no longer supported)*
-   - **Data granularity** → **Row-level data** *(Aggregated is no longer supported)*
-   - **Table name** → only needed for multi-table queries
-6. **Data Connectivity mode** → **Import**. *(DirectQuery is no longer supported.)*
-7. Load, and look at the columns you get.
+**The connection is real.** The Consumption Dashboard's own export dialog has a **Connect data**
+button that hands you a **Partition identifier** and a **Query identifier**, under two tabs:
 
-**What you're looking for:** columns resembling `PersonId` or `UserPrincipalName`, `ServiceName`,
-`SpendingPolicyId`, `MetricDate` and `Total Copilot Credits used`. If you see those, the path works
-and we would very much like to hear about it. If you only get collaboration metrics — meeting hours,
-email volume, focus time — then the connector does not carry consumption data and this path is a dead
-end for CreditLens.
-
----
-
-## Requirements
-
-| | |
+| Tab | For |
 |---|---|
-| **Role** | Viva Insights **Analyst** (assigned by a Global Administrator) |
-| **Power BI** | Desktop December 2022 or newer |
-| **Licence** | No Premium or Fabric capacity needed for the connector itself |
+| **Power BI** | Also offers **Download Power BI template** — Microsoft's own starter template |
+| **Microsoft Fabric** | Dataflow Gen2, documented at [export-query-data-microsoft-fabric][d1] |
+
+So this is not a guess about whether Analyst Workbench queries happen to carry credit data. The
+Consumption Dashboard publishes identifiers specifically for this purpose.
+
+**What is not yet confirmed** is that a given tenant can actually use it. Our first attempt returned
+**access forbidden**, which looks like a tenant-side permission rather than anything in the
+connection — most likely the Viva Insights **Analyst** role, or connector access not yet granted.
+
+Until someone completes the round trip, this folder ships a test procedure rather than a template.
+**[TEST-PROCEDURE.md](TEST-PROCEDURE.md)** makes the test decisive in about ten minutes.
+
+**A model wired for it already exists** — see [Already wired](#already-wired) below.
+
+---
+
+## Worth knowing before you invest in this
+
+Microsoft ships **its own Power BI template** from that same dialog. Download it first.
+
+It will cover Cowork consumption from the Consumption Dashboard, and it will do that with
+first-party support. CreditLens is a different proposition: three products in one report — Cowork,
+Copilot Studio and GitHub Copilot — with cost, optimisation and forecast pages over all of them.
+
+If you only need Cowork, use Microsoft's. If you are trying to see the whole Copilot bill in one
+place, that is what this is for.
+
+---
+
+## Getting the identifiers
+
+1. <https://analysis.insights.cloud.microsoft> → **Consumption Dashboard**
+2. The **download** icon, top right
+3. Choose **Export by week** *(weekly is what CreditLens is built on)*
+4. **Connect data** → **Power BI** tab
+5. Copy **Partition identifier** and **Query identifier**
+
+## Connecting
+
+Power BI Desktop → **Get Data** → **Online Services** → **Viva Insights** → **Connect**
+
+| Field | Value |
+|---|---|
+| Partition Identifier | from step 5 |
+| Query Name | **leave blank** |
+| Query Identifiers | from step 5 |
+| **Advanced** → Schema type | **Pivoted** — Unpivoted is no longer supported |
+| **Advanced** → Data granularity | **Row-level data** — Aggregated is no longer supported |
+| **Advanced** → Table name | only for multi-table queries |
+| Data Connectivity mode | **Import** — DirectQuery is no longer supported |
+| Authentication | **Organizational account** |
+
+Get any of the three Advanced settings wrong and you may load something that looks plausible but is
+not row-level. Check them before clicking Load.
+
+---
+
+## Already wired
+
+A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`. It adds two
+parameters — `VivaPartitionId` and `VivaQueryId` — and swaps the metrics source from CSV to:
+
+```m
+VivaInsights.Data(
+    VivaPartitionId,
+    null,                    // Query Name - blank
+    VivaQueryId,
+    [SchemaType = "Pivoted", APIType = "Row-level data"]
+)
+```
+
+Microsoft does not publish that function's signature. It was read out of Power BI Desktop's own
+connector registry, which declares `VivaInsights.Data` with an options record at position 3 —
+meaning arguments 0–2 are the three dialog fields in dialog order. The model loads, so the name and
+arity are right; what remains untested is the round trip to real data.
+
+Everything downstream is unchanged. The column normalisation that already copes with both export
+shapes will cope with the connector too, provided it returns the same columns.
+
+**One known gap.** Spending policy *names* have no connector equivalent — the dashboard exposes one
+query result, and names live in `SpendingPolicyMetadata.csv`. Without that file, policies show as
+GUIDs. Pricing is unaffected: the limits travel inline on the metrics rows.
 
 ---
 
@@ -72,38 +102,27 @@ end for CreditLens.
 
 Two things must both be true, or the report goes stale while appearing to refresh:
 
-1. **Auto-refresh** must be enabled on the source query in Viva Insights → Analysis results.
-2. **Scheduled refresh** must be configured on the semantic model in the Power BI Service.
+1. **Auto-refresh** enabled on the query in Viva Insights → Analysis results
+2. **Scheduled refresh** configured on the semantic model in the Power BI Service
 
-Miss the first and Power BI will faithfully re-read a result set that never changes.
+Viva Insights refreshes over the weekend, so schedule for **Tuesday morning** — Microsoft suggests
+around 8am PST for the Fabric route, and the same reasoning applies here.
 
 ---
 
-## A privacy note worth reading
+## A privacy note
 
 The connector **does not enforce Viva Insights privacy rules**, including minimum group size. It
-returns row-level data and it is on you to apply appropriate aggregation before anyone sees it.
+returns row-level data and it is on you to aggregate appropriately before publishing.
 
-> *"The connector doesn't enforce privacy rules, including Minimum group size."*
-> — [power-bi-connector][c1]
+> *"The connector doesn't enforce privacy rules, including Minimum group size."* — [connector docs][d2]
 
-CreditLens shows per-person consumption by design — that is the point of a chargeback report — but
-check whether per-person reporting requires works-council consultation or similar in your
-jurisdiction before publishing it.
-
----
-
-## If it works
-
-Tell us, and we will build a proper `.pbit` for this path with the connector wired in. Right now
-there is no template in this folder, because shipping one that connects to something we cannot
-confirm exists would be worse than shipping nothing.
+CreditLens shows per-person consumption deliberately — that is what a chargeback report is for — but
+check whether that needs works-council consultation where you operate.
 
 ---
 
 ## Known deprecations
-
-If you have an older Viva Insights connection anywhere, these are all now unsupported:
 
 | Was | Now |
 |---|---|
@@ -111,11 +130,13 @@ If you have an older Viva Insights connection anywhere, these are all now unsupp
 | Unpivoted schema | **Pivoted** only |
 | Aggregated granularity | **Row-level data** only |
 
-To convert an existing one: change Storage mode to Import in Model view, then set `APIType` to
+To convert an older connection: change Storage mode to Import in Model view, then set `APIType` to
 `"Row-level data"` and `SchemaType` to `"Pivoted"` in the formula bar.
 
 ---
 
-[c1]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/power-bi-connector
+[d1]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
+[d2]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/power-bi-connector
 
-**Source:** [Viva Insights Power BI connector][c1], checked 2026-04-25.
+**Sources:** [Export query data to Microsoft Fabric][d1] (2026-03-06) ·
+[Viva Insights Power BI connector][d2] (2026-04-25) · portal steps checked 2026-08-04.
