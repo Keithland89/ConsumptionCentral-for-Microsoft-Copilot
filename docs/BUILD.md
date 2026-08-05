@@ -45,7 +45,8 @@ Same model, different source. From the same project:
 
 1. Swap each table's partition from the folder-discovery pattern to
    `Sql.Database(FabricSQLEndpoint, LakehouseName)` against the table contract in
-   [`2. Fabric/README.md`](2.%20Fabric/README.md#table-contracts).
+   [`2. Fabric/README.md`](../2.%20Fabric/README.md#table-contracts) and the column detail in
+   [`2. Fabric/docs/DATA-DICTIONARY.md`](../2.%20Fabric/docs/DATA-DICTIONARY.md).
 2. Replace `DataFolder` (and the `DataFiles` / `GetDataFile` helpers it feeds) with two text
    parameters: `FabricSQLEndpoint` and `LakehouseName`.
 3. Leave the five commercial parameters as they are — they are source-independent.

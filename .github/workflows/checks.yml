@@ -1,0 +1,94 @@
+name: Check docs and notebooks
+
+# Several of the exports CreditLens reads are preview features whose portals
+# move, so the docs link out a lot. This catches a broken internal link or a
+# notebook that will not parse before a customer hits it.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Notebooks are valid JSON and every code cell parses
+        run: |
+          python - <<'PY'
+          import ast, glob, json, os, sys
+
+          bad = 0
+          for path in sorted(glob.glob("**/*.ipynb", recursive=True)):
+              name = os.path.basename(path)
+              try:
+                  nb = json.load(open(path, encoding="utf-8"))
+              except Exception as e:
+                  print(f"{name}: INVALID JSON: {e}")
+                  bad += 1
+                  continue
+              for i, c in enumerate(nb["cells"]):
+                  if c["cell_type"] != "code":
+                      continue
+                  try:
+                      ast.parse("".join(c["source"]))
+                  except SyntaxError as e:
+                      print(f"{name} cell {i}: line {e.lineno}: {e.msg}")
+                      bad += 1
+              print(f"{name}: {len(nb['cells'])} cells")
+          sys.exit(1 if bad else 0)
+          PY
+
+      - name: Every internal doc link resolves
+        run: |
+          python - <<'PY'
+          import os, re, sys, urllib.parse
+
+          LINK = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
+          missing = []
+          ok = 0
+
+          for dirpath, dirnames, filenames in os.walk("."):
+              if ".git" in dirpath:
+                  continue
+              for fn in filenames:
+                  if not fn.endswith(".md"):
+                      continue
+                  path = os.path.join(dirpath, fn)
+                  text = open(path, encoding="utf-8").read()
+                  for label, target in LINK.findall(text):
+                      t = target.split("#")[0].strip()
+                      if not t or t.startswith(("http", "mailto:")):
+                          continue
+                      # ../../issues and friends resolve on github.com only
+                      if "issues" in t or "stargazers" in t:
+                          continue
+                      t = urllib.parse.unquote(t)
+                      resolved = os.path.normpath(os.path.join(dirpath, t))
+                      if os.path.exists(resolved):
+                          ok += 1
+                      else:
+                          missing.append((path, label, target))
+
+          print(f"{ok} internal links resolve")
+          for f, label, target in missing:
+              print(f"BROKEN  {f}: [{label}] -> {target}")
+          sys.exit(1 if missing else 0)
+          PY
+
+      - name: Sample data carries no real identifiers
+        run: |
+          # The sample set is synthetic. This catches a real export being
+          # committed by accident, which matters more than any other check here.
+          if grep -rIlE '@(microsoft|[a-zA-Z0-9]+\.onmicrosoft)\.com' --include='*.csv' .; then
+            echo "A CSV contains what looks like a real tenant address."
+            exit 1
+          fi
+          echo "no real-looking addresses in committed CSVs"

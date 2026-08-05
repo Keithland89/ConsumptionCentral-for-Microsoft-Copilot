@@ -26,9 +26,15 @@ lower than a full year of a real tenant. Shapes, column names and relationships 
 
 ## Using it
 
-Open **`../CreditLens - Local CSV.pbit`** and point each path parameter at the matching file in this
-folder. Leave the commercial-term parameters at their defaults for a first look — the cost pages will
-then be arithmetic on list prices rather than your agreement.
+> **The `.pbit` is not built yet.** See [docs/BUILD.md](../../docs/BUILD.md) — it is a short manual
+> step, because Power BI Desktop has no command-line template export. Until then, open the PBIP
+> project directly.
+
+Set the **`DataFolder`** parameter to this folder. That is the only one that has to change — the
+files are found by name, so nothing needs renaming and nothing needs a path of its own.
+
+Leave the commercial parameters at their defaults for a first look. The cost pages will then be
+arithmetic on list prices rather than your agreement, which is fine for seeing the shape of it.
 
 ## A note on the two export shapes
 

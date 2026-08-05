@@ -16,6 +16,18 @@ data rather than CSVs on someone's laptop.
 
 ---
 
+## What's in this folder
+
+```
+notebooks/                 five ingesters — Viva, Studio, GitHub (API), GitHub (CSV), Org
+docs/DATA-DICTIONARY.md    every table and column, with merge keys and caveats
+README.md                  this file
+CreditLens - Fabric.pbit   NOT YET BUILT — see ../docs/BUILD.md
+```
+
+The notebooks and table contracts are complete and usable today. Only the report file is
+outstanding, and that is a short manual step.
+
 ## How it fits together
 
 ```
@@ -63,11 +75,17 @@ download a GitHub file again — it reads the dedicated AI-credit endpoints, whi
 history against the web report's 31 days. Needs a classic PAT with `read:enterprise` or
 `manage_billing:copilot`, stored in Key Vault.
 
-Use the CSV version instead only if you specifically need `total_monthly_quota` or the `aic_*`
-columns, which are not in the API schema.
+Use the CSV version instead only if you need `total_monthly_quota`, the `aic_*` columns, or
+`repository` — none of which the AI-credit API returns.
 
 Each notebook is **idempotent and append-safe**: it merges on the natural key, so re-running last
 week's file does not double-count. That property is what makes accumulating history safe.
+
+Two of the Studio exports carry **no date** — they are month-to-date aggregates — so the Studio
+ingester stamps each load with a `snapshot_month` and merges on that. Run it monthly and you build
+per-agent history from a source that has none. See
+[docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md#studio_agent) for what that means when reading the
+numbers.
 
 ### 4. Drop in your first exports
 
@@ -85,6 +103,10 @@ Click-paths for getting the exports: **[docs/DATA-SOURCES.md](../docs/DATA-SOURC
 updated 2026-06-26.)*
 
 ### 6. Open the template
+
+> **Not yet built.** `CreditLens - Fabric.pbit` requires the source swap described in
+> [docs/BUILD.md](../docs/BUILD.md) and has not been produced yet. The notebooks and table contracts
+> on this page are complete and usable now — it is only the report file that is outstanding.
 
 Double-click **`CreditLens - Fabric.pbit`** and supply:
 
@@ -145,40 +167,22 @@ parameters change.
 
 ## Table contracts
 
-The template expects these tables. If you build your own pipeline, match this and the template works
-unchanged.
+The template expects these eight tables. Full column-by-column detail, including merge keys and the
+gotchas that matter when reading the numbers, is in
+**[docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md)**.
 
-**`viva_credits_weekly`** — one row per person × service × policy × week
-`person_id`, `user_principal_name`, `entra_id`, `service_id`, `service_name`, `spending_policy_id`,
-`metric_date`, `session_count`, `spending_policy_limit`, `credits_used`, `user_limit`
+| Table | Grain | Load |
+|---|---|---|
+| `viva_credits_weekly` | person × service × policy × week | merge |
+| `viva_spending_policy` | policy | replace |
+| `studio_tenant_daily` | environment × plan × capacity × day | merge |
+| `studio_agent` | snapshot month × agent × feature × channel × environment | merge |
+| `studio_user` | snapshot month × user × agent | merge |
+| `github_ai_usage` | person × day × sku × model | merge |
+| `github_user_map` | person | replace |
+| `org_attributes` | person | replace |
 
-**`viva_spending_policy`**
-`spending_policy_id`, `name`, `plan_limit`, `user_limit`, `included_services`
-
-**`studio_tenant_daily`**
-`billing_plan_id`, `billing_plan_name`, `environment_id`, `environment_name`, `capacity_type`,
-`entitled_quantity`, `prepaid_consumed`, `payg_consumed`, `usage_date`
-
-**`studio_agent`**
-`agent_name`, `agent_id`, `product`, `billable_feature`, `billed_credit`, `non_billed_credit`,
-`channel`, `knowledge_sources`, `tool_used`, `llm_model`, `scenario_name`, `environment_id`,
-`environment_name`
-
-**`studio_user`**
-`user_id`, `user_email`, `agent_id`, `agent_name`, `billable_credit_used`, `credits_used`,
-`m365_copilot_licensed`
-
-**`github_ai_usage`**
-`usage_date`, `username`, `product`, `sku`, `model`, `quantity`, `unit_type`,
-`applied_cost_per_quantity`, `gross_amount`, `discount_amount`, `net_amount`, `total_monthly_quota`,
-`organization`, `repository`, `cost_center_name`
-
-**`github_user_map`**
-`username`, `user_principal_name`, `display_name`, `plan`, `included_credits`
-
-**`org_attributes`**
-`user_principal_name`, `display_name`, `department`, `job_title`, `job_family`, `city`, `country`,
-`cost_center`, `manager`, `business_unit`
+If you build your own pipeline, match the dictionary and the template works unchanged.
 
 ---
 
