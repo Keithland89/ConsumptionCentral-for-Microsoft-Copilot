@@ -19,7 +19,7 @@ data rather than CSVs on someone's laptop.
 ## What's in this folder
 
 ```
-notebooks/                 five ingesters — Viva, Studio, GitHub (API), GitHub (CSV), Org
+notebooks/                 six — Viva, Studio, GitHub (API), GitHub (CSV), Org, commercial terms
 flows/                     automating the landing step with Power Automate
 docs/DATA-DICTIONARY.md    every table and column, with merge keys and caveats
 README.md                  this file
@@ -70,6 +70,7 @@ Upload everything from [`notebooks/`](notebooks/) into the workspace and attach 
 | `Ingest_GitHub_API.ipynb` | **GitHub REST API** — no file | `github_ai_usage`, `github_user_map` |
 | `Ingest_GitHub.ipynb` | `landing/github/*.csv` | same tables, from the emailed CSV |
 | `Ingest_Org.ipynb` | `landing/org/*.csv` | `org_attributes` |
+| `Ingest_CommercialTerms.ipynb` | **Azure Cost Management API** — no file | `commercial_terms` *(optional)* |
 
 **GitHub is the one source that can run unattended.** Use `Ingest_GitHub_API.ipynb` and you never
 download a GitHub file again — it reads the dedicated AI-credit endpoints, which carry 24 months of
@@ -84,9 +85,16 @@ week's file does not double-count. That property is what makes accumulating hist
 
 Two of the Studio exports carry **no date** — they are month-to-date aggregates — so the Studio
 ingester stamps each load with a `snapshot_month` and merges on that. Run it monthly and you build
-per-agent history from a source that has none. See
+per-agent history from a source that has none. **The report reads the latest snapshot only**, since
+each one is already a month-to-date total and summing them would multiply every agent's credits by
+the number of months loaded. See
 [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md#studio_agent) for what that means when reading the
 numbers.
+
+`Ingest_CommercialTerms.ipynb` is the odd one out: it ingests no consumption data. It asks Azure
+Cost Management what you were actually charged per credit and writes it to a one-row table that
+overrides the template's parameters. Optional, and it needs **Cost Management Reader** — if that
+grant is refused, skip it and set the rate in the template by hand.
 
 ### 4. Drop in your first exports
 
@@ -105,9 +113,10 @@ updated 2026-06-26.)*
 
 ### 6. Open the template
 
-> **Not yet built.** `CreditLens - Fabric.pbit` requires the source swap described in
-> [docs/BUILD.md](../docs/BUILD.md) and has not been produced yet. The notebooks and table contracts
-> on this page are complete and usable now — it is only the report file that is outstanding.
+> **Source swap done, `.pbit` not yet exported.** The Fabric model is built and validated — every
+> query reads the Lakehouse, no CSV paths remain — but the `.pbit` still has to be exported from
+> Power BI Desktop by hand, which Desktop offers no way to script. See
+> [docs/BUILD.md](../docs/BUILD.md).
 
 Double-click **`CreditLens - Fabric.pbit`** and supply:
 
@@ -118,6 +127,11 @@ Double-click **`CreditLens - Fabric.pbit`** and supply:
 
 Then the commercial terms — see the
 [table in the root README](../README.md#-commercial-terms-you-must-set).
+
+> **Or don't.** On this path the commercial terms are optional. Publish a one-row
+> [`commercial_terms`](docs/DATA-DICTIONARY.md#commercial_terms) table and it overrides every one of
+> them, so the rate in the report is the rate on your invoice rather than a number somebody typed
+> once and nobody revisited. Any column you leave out falls back to the parameter.
 
 Power BI will ask you to sign in with an **Organizational Account**. That is expected: the endpoint
 is Entra-authenticated and templates never carry credentials.

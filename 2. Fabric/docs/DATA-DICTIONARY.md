@@ -1,11 +1,15 @@
 # Data dictionary
 
-The eight Delta tables CreditLens reads, and what each column means.
+The nine Delta tables CreditLens reads, and what each column means.
 
 If you build your own pipeline instead of using the notebooks, match this and the template works
 unchanged. The tables are deliberately close to the source exports — renamed to `snake_case` and
 typed, but not reshaped — so you can compare a table against the CSV it came from without a
 translation step.
+
+**Every table is optional.** A missing table is a supported state: the pages for that product come
+up empty and every other page is unaffected. A customer with GitHub Copilot but no Copilot Studio
+loads the same template and simply sees no Studio pages populated. Nothing needs commenting out.
 
 Every table also carries **`_loaded_at`** (timestamp), written by the ingester. Not used by the
 report; useful when a number looks wrong and you need to know when it arrived.
@@ -14,8 +18,8 @@ report; useful when a number looks wrong and you need to know when it arrived.
 
 ## `viva_credits_weekly`
 
-Cowork and Work IQ credit consumption. **One row per person × service × policy × week.** The single
-required table — without it the Cowork pages are empty.
+Cowork and Work IQ credit consumption. **One row per person × service × policy × week.** Absent it,
+the Cowork pages are empty and the rest of the report is unaffected.
 
 | Column | Type | Notes |
 |---|---|---|
@@ -110,6 +114,11 @@ An agent appears once per feature per channel per environment, so all of those b
 > not new consumption. CreditLens therefore treats them as period totals and never plots them on a
 > time axis — which is also why the Studio forecast extends a daily run rate rather than fitting a
 > curve.
+>
+> **The template reads the LATEST `snapshot_month` only.** Once you have run the ingester twice, an
+> agent has a row per snapshot; summing them would multiply that agent's credits by the number of
+> months loaded, and each of those rows is already a month-to-date total. The history is kept
+> because it is worth having, not because the report adds it up.
 
 ---
 
@@ -223,6 +232,35 @@ once, in their new one.
 >
 > **On a de-identified Viva export the match rate will be 0%**, and that is expected: hashed person
 > IDs cannot match real UPNs. Department breakdowns need an identified export.
+
+---
+
+## `commercial_terms`
+
+**Optional, and unlike the others it holds no consumption data at all.** One row, one column per
+commercial figure. Where a column is present its value overrides the matching template parameter;
+where it is absent, or the table does not exist, the parameter is used. So a customer with a
+pipeline gets their real numbers without anyone retyping them, and a customer without one is
+unaffected.
+
+The reason to bother: **Azure Cost Management knows the rate you actually pay.** Divide cost by
+quantity on the Copilot credit meter and you have the negotiated rate rather than the $0.01 list
+price. See [COMMERCIAL-TERMS.md](../../docs/COMMERCIAL-TERMS.md).
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| `credit_rate` | double | Cost per pay-as-you-go credit. Overrides `CreditRate`. |
+| `prepaid_credit_rate` | double | Effective cost per pre-purchased credit. Overrides `PrepaidCreditRate`. |
+| `prepaid_credit_balance` | double | Credits bought up front. Overrides `PrepaidCreditBalance`. |
+| `github_business_seat` | double | Monthly price per Copilot Business seat. Overrides `GitHubBusinessSeatPrice`. |
+| `github_enterprise_seat` | double | Monthly price per Copilot Enterprise seat. Overrides `GitHubEnterpriseSeatPrice`. |
+
+Every column is optional; supply only the ones you know. A one-row table with just `credit_rate` is
+a perfectly good use of this.
+
+> **More than one row and only the first is read.** This is a settings table, not a history — if you
+> want to keep old rates, keep them somewhere else. Re-pricing history against a rate that changed
+> mid-period is a bigger question than this template answers.
 
 ---
 

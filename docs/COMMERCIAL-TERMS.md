@@ -108,6 +108,12 @@ shows as $0 under ActualCost, which would make the rate look like zero.
 This suits the [Fabric path](../2.%20Fabric/), where a service principal and a pipeline already
 exist. It is a poor fit for the CSV template, which would need interactive auth on every refresh.
 
+> **This is now built.** [`Ingest_CommercialTerms.ipynb`](../2.%20Fabric/notebooks/Ingest_CommercialTerms.ipynb)
+> runs the query above, derives the rate, refuses to write anything implausible, and publishes a
+> one-row `commercial_terms` table. The Fabric template reads that table in preference to its
+> parameters, per column — so the report shows your invoiced rate without anyone retyping it, and a
+> customer who skips the notebook is unaffected.
+
 ### Prepaid balance — the one worth automating
 
 `PrepaidCreditBalance` is the only commercial value that genuinely moves month to month. It can be
