@@ -182,9 +182,24 @@ parameters change.
 
 ## Table contracts
 
-The template expects these eight tables. Full column-by-column detail, including merge keys and the
-gotchas that matter when reading the numbers, is in
-**[docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md)**.
+Nine tables, all optional. See [`docs/DATA-DICTIONARY.md`](docs/DATA-DICTIONARY.md) for columns.
+
+**Verified against a live Lakehouse.** All nine loaded, the report refreshed, and the figures matched
+the source row for row. Two subsets were then tested by deleting tables and refreshing again:
+
+| Tables present | Result |
+|---|---|
+| All nine | Cowork £5,134.64 · Studio 2,013 billed credits · GitHub $6,212.50 |
+| GitHub + Org only | Refreshes. GitHub figures unchanged. Cowork/Studio pages empty. |
+| Cowork + Studio + terms | Refreshes. Cowork and Studio figures **identical** to the full run. |
+
+> **A note on removing a table while Desktop is open.** Power Query caches the connection's table
+> list for the session, so a refresh straight after a table disappears still tries to read it and
+> fails with `Invalid object name`. Restart Desktop and it is fine. Scheduled refreshes in the
+> Service evaluate fresh each time and are unaffected.
+
+Full column-by-column detail, including merge keys and the gotchas that matter when reading the
+numbers, is in **[docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md)**.
 
 | Table | Grain | Load |
 |---|---|---|
@@ -196,6 +211,7 @@ gotchas that matter when reading the numbers, is in
 | `github_ai_usage` | person × day × sku × model | merge |
 | `github_user_map` | person | replace |
 | `org_attributes` | person | replace |
+| `commercial_terms` | one row | replace *(optional)* |
 
 If you build your own pipeline, match the dictionary and the template works unchanged.
 
