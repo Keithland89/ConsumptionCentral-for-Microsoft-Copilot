@@ -124,26 +124,27 @@ whatever you load into it.
 The exports carry **consumption, not pricing**. Before the cost pages mean anything, set these under
 **Transform data → Manage parameters**:
 
-| Parameter | Default | Where to find yours |
-|---|---|---|
-| `CoworkRatePerCredit` | 0.01 | Your agreement or an invoice |
-| `CoworkPrepaidRatePerCredit` | 0.008 | Your capacity pack terms |
-| `CapacityPackCredits` | 0 | M365 admin center → Copilot → Cost management |
-| `StudioRatePerCredit` | 0.01 | Your agreement |
-| `StudioPrepaidRatePerCredit` | 0.008 | Your agreement |
-| `GitHubRatePerCredit` | 0.01 | GitHub published rate (1 credit = $0.01) |
-| `GitHubBusinessSeatPrice` | 19 | Your agreement — list price shown |
-| `GitHubEnterpriseSeatPrice` | 39 | Your agreement — list price shown |
-| `GitHubAllowanceChangeDate` | 2026-09-01 | See below |
-| `GitHubBusinessStandardCredits` | 1900 | GitHub published standard allowance |
-| `GitHubEnterpriseStandardCredits` | 3900 | GitHub published standard allowance |
+There are **seven**, and only the first is required.
 
-**On the GitHub allowance change.** Existing Copilot Business and Enterprise customers received a
-promotional allowance of 3,000 / 7,000 credits per user per month from 1 June to 1 September 2026,
-after which it returns to the standard 1,900 / 3,900. The forecast page models that step-down
-explicitly. If your agreement has no change pending, set the date to one already past and the two
-credit values to your current entitlement — the report detects that nothing is changing and says so
-instead of forecasting a cliff.
+| # | Parameter | Default | What it is |
+|---|---|---|---|
+| 1 | `DataFolder` | — | **The one thing you must set.** A folder holding whatever exports you have. Files are found by name, subfolders included, so nothing needs renaming and anything absent is skipped. |
+| 2 | `CreditRate` | 0.01 | Pay-as-you-go cost per credit. Microsoft and GitHub both publish $0.01, so one number covers all three products. |
+| 3 | `PrepaidCreditRate` | 0.008 | Cost per credit drawn from prepaid capacity. Only matters if you hold some. |
+| 4 | `PrepaidCreditBalance` | 0 | Prepaid Cowork credits this period, from M365 admin center → Copilot → Cost management. |
+| 5 | `GitHubBusinessSeatPrice` | 19 | List price. Change if discounted — seats are usually the larger half of the GitHub bill. |
+| 6 | `GitHubEnterpriseSeatPrice` | 39 | List price. |
+| 7 | `BillingPeriodWeeks` | 4 | Trailing weeks that make one billing period. |
+
+**If your agreement prices products differently**, leave `CreditRate` alone and edit the per-product
+columns in the **Settings** query — it keeps a separate column for Cowork, Studio and GitHub, so a
+one-line change there beats three parameters nobody understood.
+
+**GitHub's allowance change** also lives in the Settings query rather than a parameter, because it is
+a GitHub product fact rather than a customer term: the allowance falls from 3,000/7,000 to
+1,900/3,900 on 1 September 2026, and the forecast page models that step-down. If no change is pending
+for you, set the date to one already past and the two values to your current entitlement — the report
+detects that nothing is changing and says so instead of forecasting a cliff.
 
 ---
 

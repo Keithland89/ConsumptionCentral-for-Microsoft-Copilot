@@ -88,34 +88,33 @@ ready-to-run PowerShell snippet.
 ## Step 3 — Open the template
 
 Double-click **`CreditLens - Local CSV.pbit`**. Power BI Desktop prompts for parameters before it
-loads anything.
+loads anything. **There are seven, and only the first matters to get started.**
 
-**Paths** — point each at your file. Only the first is required.
-
-| Parameter | Your file |
+| Parameter | What to put |
 |---|---|
-| `VivaMetricsCsvPath` | `PersonServiceCreditsMetrics.csv` |
-| `VivaPolicyCsvPath` | `SpendingPolicyMetadata.csv` |
-| `PersonMapCsvPath` | `PersonPolicyMap.csv` — de-identified exports only |
-| `VivaPeopleCsvPath` | `PeopleMetaData.csv` — de-identified exports only |
-| `EntraCsvPath` | `entra_org.csv` |
-| `StudioTenantCsvPath` | `StudioTenantDaily.csv` |
-| `StudioAgentCsvPath` | `StudioPerAgent.csv` |
-| `StudioUserCsvPath` | `StudioPerUser.csv` |
-| `GitHubUsageCsvPath` | `GitHubAiUsage.csv` |
-| `GitHubUserMapCsvPath` | `GitHubUserMap.csv` |
+| **`DataFolder`** | The folder from step 1. That's it — the files are found by name. |
+| `CreditRate` | Leave at `0.01` unless your agreement differs |
+| `PrepaidCreditRate` | Leave at `0.008` unless you hold prepaid capacity |
+| `PrepaidCreditBalance` | Your prepaid Cowork credits, or `0` |
+| `GitHubBusinessSeatPrice` | `19`, or your discounted price |
+| `GitHubEnterpriseSeatPrice` | `39`, or your discounted price |
+| `BillingPeriodWeeks` | `4` unless your billing month differs |
 
-> **On the two de-identified-only paths.** Leave them pointing at a file that doesn't exist and the
-> template still loads — it falls back to deriving the roster from the metrics file. See
-> [the limitation](#the-derived-roster-limitation) below.
+**You do not point at individual files.** The template searches the folder — subfolders included —
+and matches each export by name, so `PersonServiceCreditsMetrics.csv`,
+`Person Service Credits Metrics.csv` and `person_service_credits_metrics.csv` all work equally well.
 
-**Commercial terms** — the exports carry consumption, not pricing. Until you set these, the cost
-pages are arithmetic on a guess. See the
-[table in the root README](../README.md#-commercial-terms-you-must-set).
+Where two copies of the same export exist, the one nearest the top of your folder wins, and among
+equals the most recent — so re-exporting over the top does the right thing, and an old copy in a
+subfolder cannot silently take over.
 
 Click **Load**. First refresh takes a minute or two.
 
-## Step 4 — Set the billing period
+## Step 4 — Check the numbers mean something
+
+The exports carry **consumption, not pricing**. Until you have set the rates, the cost pages are
+arithmetic on a list price. The **Rates in use** card on the Cost page shows what the report is
+currently assuming — worth a glance before anyone acts on a number.
 
 `BillingPeriodWeeks` (default **4**) defines what "current period" means on the Cowork pages. If your
 billing month is a calendar month rather than four weeks, this is approximate — the Viva export is
@@ -155,8 +154,14 @@ If you need the full entitled roster, take a de-identified export as well and po
 
 ## Troubleshooting
 
-**"We couldn't find the file"** — a path is wrong, or points at a folder rather than a file. Each
-parameter wants a full path including the filename.
+**"We couldn't find the folder"** — `DataFolder` is wrong, or points at a file rather than a folder.
+It wants the folder your exports are in, not one of the files.
+
+**A file is there but its page is still empty** — the name may not be recognised. The matcher strips
+spaces, dashes and underscores and looks for a fragment: `personservicecredits`, `spendingpolicy`,
+`personpolicymap`, `peoplemetadata`, `entra` / `orgdata` / `users`, `studiotenantdaily`,
+`studioperagent`, `studioperuser`, `githubaiusage`, `githubusermap`. Rename the file to contain the
+relevant fragment and refresh.
 
 **Cowork pages are empty** — check `PersonServiceCreditsMetrics.csv` opens and has more than a header
 row. If your export is daily rather than weekly you will get very few weeks; re-export by week.
