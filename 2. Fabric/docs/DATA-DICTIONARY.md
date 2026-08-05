@@ -69,6 +69,7 @@ Studio table with a real date**, and so the only one CreditLens plots over time.
 | `environment_id` | string | |
 | `environment_name` | string | |
 | `capacity_type` | string | e.g. `MCSMessages` |
+| `source_file` | string | Which export the row came from — matters when several environments are exported separately |
 | `entitled_quantity` | double | Prepaid entitlement |
 | `prepaid_consumed` | double | Drawn from prepaid capacity |
 | `payg_consumed` | double | Billed pay-as-you-go |
@@ -99,6 +100,7 @@ ingester stamps `snapshot_month` and merges on it.
 | `scenario_name` | string | |
 | `environment_id` | string | |
 | `environment_name` | string | |
+| `source_file` | string | Which export this came from — lineage, useful when several environments export separately |
 
 **Merge key:** `snapshot_month`, `agent_id`, `billable_feature`, `channel`, `environment_id`.
 
@@ -125,6 +127,7 @@ Per-user consumption. Same no-date caveat as `studio_agent`.
 | `billable_credit_used` | double | |
 | `credits_used` | double | |
 | `m365_copilot_licensed` | boolean | Parsed from the export's text |
+| `source_file` | string | Lineage |
 
 **Merge key:** `snapshot_month`, `user_id`, `agent_id`.
 

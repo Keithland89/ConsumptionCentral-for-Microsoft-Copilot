@@ -12,9 +12,9 @@
 
 **[Deployment paths ↓](#-pick-a-deployment-path)** · **[What it measures ↓](#-what-it-measures)** · **[Data sources ↓](#-data-sources)** · **[Pages ↓](#-dashboard-pages)**
 
-![CreditLens — Cowork cost page](Images/creditlens-preview.png)
+![CreditLens — all fourteen pages](Images/CreditLens-Preview.gif)
 
-<sub>Cowork cost page, shown with the synthetic sample dataset.</sub>
+<sub>All fourteen pages, shown with the synthetic sample dataset.</sub>
 
 </div>
 

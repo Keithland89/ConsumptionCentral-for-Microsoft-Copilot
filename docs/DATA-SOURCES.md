@@ -168,18 +168,32 @@ treat `ServiceName` as an open list — CreditLens groups by whatever values it 
 
 ### Files and columns
 
-**`StudioTenantDaily.csv`** — tenant × environment × day.
+The exports are named `EntitlementConsumption*_MCSMessages*.csv`, sometimes with a `_30` / `_180`
+day-window suffix. CreditLens matches those names first and falls back to a looser pattern, so a
+renamed file still works.
+
+> *(Filenames confirmed against
+> [StudioLens](https://github.com/Keithland89/StudioLens-for-Copilot-Studio), which reads the same
+> PPAC exports for a different report.)*
+
+| Export | File |
+|---|---|
+| Tenant daily | `EntitlementConsumptionTenantDetailsReport_MCSMessages*.csv` |
+| Per agent | `EntitlementConsumptionTenantPerAgentDetailsReport_MCSMessages*.csv` |
+| Per user | `EntitlementConsumptionTenantPerUserDetailsReport_MCSMessages*.csv` |
+
+**Tenant daily** — tenant × environment × day.
 
 `BillingPlan Id`, `BillingPlan Name`, `Environment Id`, `Environment Name`, `Capacity Type`,
 `Entitled Quantity`, `Prepaid Consumed Quantity`, `Pay as you go Consumed Quantity`, `Usage Date`
 
-**`StudioPerAgent.csv`** — agent totals. **No date column.**
+**Per agent** — agent totals. **No date column.**
 
 `Agent Name`, `Agent Id`, `Product`, `AI Feature/Billable Feature`, `Billed credit`,
 `Non-billed credit`, `Channel`, `Knowledge Sources`, `Tool Used`, `LLM Model`, `Scenario Name`,
 `Environment Id`, `Environment Name`
 
-**`StudioPerUser.csv`** — user × agent totals. **No date column.**
+**Per user** — user × agent totals. **No date column.**
 
 `User Id`, `User Email`, `Agent Id`, `Agent Name`, `Billable credit used`, `Credits used`,
 `M365 Copilot Licensed`
@@ -190,6 +204,18 @@ treat `ServiceName` as an open list — CreditLens groups by whatever values it 
 > a time axis — only the tenant daily file drives Studio trends. This is why the Studio forecast
 > extends a daily run rate rather than fitting a growth curve: there is not enough dated history to
 > fit one honestly.
+>
+> The [Fabric path](../2.%20Fabric/) works around this by stamping each load with a snapshot month,
+> so running it monthly builds the history the export itself does not carry.
+
+> **Several environments, several files.** A tenant can export per environment rather than once for
+> the whole tenant. Drop them all in the same folder — they are unioned, and a `source_file` column
+> records which is which.
+
+> **Watch the free-text columns.** `Knowledge Sources`, `Scenario Name` and `Agent Name` can contain
+> commas or line breaks. The Fabric ingester parses with `multiLine` and quote-escaping for exactly
+> this reason; anything else reading these files should do the same, or one such value will silently
+> shift every column after it on that row.
 
 ---
 

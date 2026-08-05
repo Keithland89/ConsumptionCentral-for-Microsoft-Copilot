@@ -20,6 +20,7 @@ data rather than CSVs on someone's laptop.
 
 ```
 notebooks/                 five ingesters — Viva, Studio, GitHub (API), GitHub (CSV), Org
+flows/                     automating the landing step with Power Automate
 docs/DATA-DICTIONARY.md    every table and column, with merge keys and caveats
 README.md                  this file
 CreditLens - Fabric.pbit   NOT YET BUILT — see ../docs/BUILD.md
@@ -142,12 +143,12 @@ Three of the four sources need someone to download a file. One does not.
 | Entra org | ⚠️ Scriptable | Quarterly, or after a reorg | Graph PowerShell works; slow-moving anyway |
 
 **Set up the GitHub notebook on a schedule and forget it.** The other three are the recurring chore,
-and Viva is the one that actually matters — miss six months and that history is gone permanently.
+and Viva is the one that actually matters — miss five months and that history is gone permanently.
 
-If you want to automate the *landing* step for the manual sources, a Power Automate flow that watches
-a mailbox or SharePoint library and writes to OneLake works well — the
-[ValueLens repo](https://github.com/microsoft/ValueLens-for-Microsoft-Copilot) has working examples
-of exactly that pattern under `2. Fabric/flows/` that you can adapt.
+**You can automate the landing step** for the manual sources with a Power Automate flow that watches
+a mailbox or SharePoint library and writes to OneLake — see [`flows/`](flows/). Entra becomes fully
+hands-off that way too. Viva and Studio still need someone to press export, but the flow removes the
+"save it in the right place" step, which is where things actually go wrong.
 
 ---
 
