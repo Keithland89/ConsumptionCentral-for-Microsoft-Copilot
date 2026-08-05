@@ -110,6 +110,11 @@ ingester stamps `snapshot_month` and merges on it.
 
 An agent appears once per feature per channel per environment, so all of those belong in the key.
 
+> **`agent_name` and `environment_name` are frequently blank.** Power Automate flows have no agent
+> name in PPAC — in the sample dataset 419 of 448 rows are blank. `agent_id` is always populated, so
+> nothing is lost, but the agent and environment slicers list only named agents. Those rows still
+> count in every total.
+
 > **Read these as cumulative, not incremental.** Two snapshots in the same month show growth to date,
 > not new consumption. CreditLens therefore treats them as period totals and never plots them on a
 > time axis — which is also why the Studio forecast extends a daily run rate rather than fitting a

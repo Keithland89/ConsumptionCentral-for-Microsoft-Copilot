@@ -79,7 +79,7 @@ To export the `.pbit`:
 > `1. Local CSV/sample-data/` match the contract and can be uploaded to a Lakehouse's landing folder
 > and run through the ingesters.
 
-### Two traps, both of which cost a load cycle here
+### Three traps, all of which cost a load cycle here
 
 **Never write TMDL with Python's `utf-8-sig`.** It writes a BOM as well as tolerating one, and
 Desktop refuses the whole project: *"Only text with UTF8 encoding without BOM is supported."* It
@@ -89,6 +89,15 @@ failures one at a time. `check_tmdl_indent.py` now fails on any BOM under the pr
 **Watch for a trailing comma before `in`.** A rewrite that drops the last `let` step leaves its
 comma behind. Brackets still balance and `let`/`in` still match, so every structural check passes
 and only Desktop objects. `check_m_syntax.py` now catches it.
+
+**A blank value in an `isKey` column invalidates the entire table.** `Agent Bridge` and
+`Studio Environment` are `DISTINCT(UNION(...))` over the Studio facts with the result marked
+`isKey`, and a key may not be blank. PPAC leaves `agent_name` and `environment_name` blank for
+Power Automate flows — 419 of 448 rows in the sample data — so one blank put both tables into an
+invalid state and every visual touching them failed with *"depends on a column that is not in a
+valid state"*. Both now filter blanks out of the bridge. The rows stay in the facts and in every
+total; they were never selectable in a slicer anyway. This affected **both** templates, since they
+read the same exports.
 
 **Keep these as two separate templates.** A single template that branches on a `SourceMode` parameter
 is tempting and does not work reliably: Power Query registers every data source in an `if/then/else`
