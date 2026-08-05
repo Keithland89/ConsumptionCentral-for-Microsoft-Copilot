@@ -150,6 +150,14 @@ a GitHub product fact rather than a customer term: the allowance falls from 3,00
 for you, set the date to one already past and the two values to your current entitlement — the report
 detects that nothing is changing and says so instead of forecasting a cliff.
 
+> **The template prompt opens with every box empty.** Power BI clears parameter values on template
+> export and there is no supported way around it. Every default is written into the parameter's own
+> description, so hovering the **ⓘ** beside each box tells you what to type.
+>
+> **[docs/COMMERCIAL-TERMS.md](docs/COMMERCIAL-TERMS.md)** covers where each figure comes from, and
+> which of them can be looked up automatically — the credit list rate is available from a public
+> Azure API, and your actual negotiated rate from Azure Cost Management.
+
 ---
 
 ## 🗂 What's in this repo
