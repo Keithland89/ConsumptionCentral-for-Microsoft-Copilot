@@ -6,10 +6,12 @@ Desktop has no command-line template export, so it cannot be scripted.
 ## Source project
 
 ```
-CreditLens-GHCP\CreditLens - Cowork WorkIQ Studio GHCP.pbip
+CreditLens-GHCP\CreditLens - Cowork WorkIQ Studio GHCP.pbip     the CSV variant
+CreditLens-Fabric\CreditLens - Cowork WorkIQ Studio GHCP.pbip   the Lakehouse variant
 ```
 
-27 tables, 284 measures, 14 pages.
+27 tables, 284 measures, 14 pages. Identical model and report in both — only the partitions and the
+source parameters differ.
 
 ## Producing `CreditLens - Local CSV.pbit`
 
@@ -41,16 +43,52 @@ CreditLens-GHCP\CreditLens - Cowork WorkIQ Studio GHCP.pbip
 
 ## Producing `CreditLens - Fabric.pbit`
 
-Same model, different source. From the same project:
+Same model, different source. **The swap is done** — it lives in its own project so both variants
+can be maintained side by side:
 
-1. Swap each table's partition from the folder-discovery pattern to
-   `Sql.Database(FabricSQLEndpoint, LakehouseName)` against the table contract in
-   [`2. Fabric/README.md`](../2.%20Fabric/README.md#table-contracts) and the column detail in
+```
+CreditLens-Fabric\CreditLens - Cowork WorkIQ Studio GHCP.pbip
+```
+
+Every query reads `Sql.Database(FabricSQLEndpoint, LakehouseName)`; no CSV path remains. Verified:
+27 tables, 284 measures, 14 pages, opens clean in Desktop.
+
+What changed from the CSV project, if it ever needs redoing:
+
+1. `DataFolder` / `DataFiles` / `GetDataFile` replaced by `FabricSQLEndpoint`, `LakehouseName`,
+   `FabricSource` and `GetTable`. `GetTable` wraps the read in `try ... otherwise null` so an absent
+   table degrades rather than errors — a missing Lakehouse table *raises*, unlike a missing CSV,
+   which returns null.
+2. Ten partitions rewritten against the contract in
    [`2. Fabric/docs/DATA-DICTIONARY.md`](../2.%20Fabric/docs/DATA-DICTIONARY.md).
-2. Replace `DataFolder` (and the `DataFiles` / `GetDataFile` helpers it feeds) with two text
-   parameters: `FabricSQLEndpoint` and `LakehouseName`.
-3. Leave the five commercial parameters as they are — they are source-independent.
-4. Export as above to `2. Fabric\CreditLens - Fabric.pbit`.
+3. `CommercialTerms` and `TermOrDefault` added: an optional one-row `commercial_terms` table
+   overrides the commercial parameters per column. Fabric-only — the CSV template has no equivalent.
+4. `studio_agent` and `studio_user` filter to the **latest `snapshot_month`**. Those exports are
+   month-to-date, so accumulated snapshots must not be summed. The CSV path never had this problem
+   because it only ever sees one export.
+
+To export the `.pbit`:
+
+1. Open `CreditLens-Fabric\...pbip`, confirm `FabricSQLEndpoint` and `LakehouseName` hold shipping
+   placeholders (`your-endpoint.datawarehouse.fabric.microsoft.com`, `creditlens`).
+2. **File → Export → Power BI template**, same description as above but pointing at a Lakehouse.
+3. Save as `2. Fabric\CreditLens - Fabric.pbit`.
+
+> Desktop refuses to refresh without a real Lakehouse, and that is fine — a template export does not
+> need loaded data. If you *do* want to validate against real tables first, the sample CSVs in
+> `1. Local CSV/sample-data/` match the contract and can be uploaded to a Lakehouse's landing folder
+> and run through the ingesters.
+
+### Two traps, both of which cost a load cycle here
+
+**Never write TMDL with Python's `utf-8-sig`.** It writes a BOM as well as tolerating one, and
+Desktop refuses the whole project: *"Only text with UTF8 encoding without BOM is supported."* It
+names only the first offending file, so a scripted rewrite that touched seven produces seven
+failures one at a time. `check_tmdl_indent.py` now fails on any BOM under the project root.
+
+**Watch for a trailing comma before `in`.** A rewrite that drops the last `let` step leaves its
+comma behind. Brackets still balance and `let`/`in` still match, so every structural check passes
+and only Desktop objects. `check_m_syntax.py` now catches it.
 
 **Keep these as two separate templates.** A single template that branches on a `SourceMode` parameter
 is tempting and does not work reliably: Power Query registers every data source in an `if/then/else`
