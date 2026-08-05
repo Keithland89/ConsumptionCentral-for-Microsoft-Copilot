@@ -185,12 +185,7 @@ Privacy Levels*: it works in Desktop and then fails on scheduled refresh in the 
 ## What's in this folder
 
 ```
-CreditLens - Local CSV.pbit    the template — NOT YET BUILT, see ../docs/BUILD.md
+CreditLens - Local CSV.pbit    the template
 sample-data/                   a small synthetic dataset, if you want to see it working first
 README.md                      this file
 ```
-
-> **On the missing `.pbit`.** Power BI Desktop has no command-line template export, so producing it
-> is a short manual step that has not been done yet. [docs/BUILD.md](../docs/BUILD.md) has the
-> procedure. Until then, open the PBIP project directly — everything else on this page applies
-> unchanged.

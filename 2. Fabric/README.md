@@ -22,12 +22,13 @@ data rather than CSVs on someone's laptop.
 notebooks/                 six — Viva, Studio, GitHub (API), GitHub (CSV), Org, commercial terms
 flows/                     automating the landing step with Power Automate
 docs/DATA-DICTIONARY.md    every table and column, with merge keys and caveats
+seed_sample_data.py        load the sample dataset into a Lakehouse, for a quick try
 README.md                  this file
-CreditLens - Fabric.pbit   NOT YET BUILT — see ../docs/BUILD.md
+CreditLens - Fabric.pbit   the template
 ```
 
-The notebooks and table contracts are complete and usable today. Only the report file is
-outstanding, and that is a short manual step.
+The model has been built and tested end to end against a live Lakehouse — all nine tables, plus two
+partial-product subsets. See [Table contracts](#table-contracts) for the figures.
 
 ## How it fits together
 
@@ -99,6 +100,22 @@ grant is refused, skip it and set the rate in the template by hand.
 ### 4. Drop in your first exports
 
 Upload each export into its `landing/` subfolder and run the matching notebook.
+
+> **Or try it with sample data first.** [`seed_sample_data.py`](seed_sample_data.py) writes all nine
+> tables straight into your Lakehouse from the synthetic dataset in
+> [`1. Local CSV/sample-data/`](../1.%20Local%20CSV/sample-data/) — no exports, no notebooks, no
+> waiting for a billing cycle:
+>
+> ```
+> pip install pandas deltalake requests
+> az login --tenant <your-tenant>
+> python seed_sample_data.py --workspace <guid> --lakehouse <guid>
+> ```
+>
+> Both GUIDs are in the Fabric portal URL with the Lakehouse open. It overwrites only the nine
+> CreditLens tables and refuses to touch anything else, which matters because Lakehouses are usually
+> shared. Testing convenience only — for real data use the notebooks, which merge rather than
+> overwrite and so accumulate history.
 Click-paths for getting the exports: **[docs/DATA-SOURCES.md](../docs/DATA-SOURCES.md)**.
 
 ### 5. Get the SQL connection string
@@ -112,11 +129,6 @@ Click-paths for getting the exports: **[docs/DATA-SOURCES.md](../docs/DATA-SOURC
 updated 2026-06-26.)*
 
 ### 6. Open the template
-
-> **Source swap done, `.pbit` not yet exported.** The Fabric model is built and validated — every
-> query reads the Lakehouse, no CSV paths remain — but the `.pbit` still has to be exported from
-> Power BI Desktop by hand, which Desktop offers no way to script. See
-> [docs/BUILD.md](../docs/BUILD.md).
 
 Double-click **`CreditLens - Fabric.pbit`** and supply:
 
