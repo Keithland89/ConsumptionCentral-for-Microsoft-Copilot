@@ -81,6 +81,9 @@ Upload everything from [`notebooks/`](notebooks/) into the workspace and attach 
 | `Ingest_GitHub_API.ipynb` | **GitHub REST API** — no file | `github_ai_usage`, `github_user_map` |
 | `Ingest_GitHub.ipynb` | `landing/github/*.csv` | same tables, from the emailed CSV |
 | `Ingest_Org.ipynb` | `landing/org/*.csv` | `org_attributes` |
+| *(or)* [ValueLens Graph ingester][vlorg] | **Microsoft Graph** — no file | `copilot_org_data` → see [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
+
+[vlorg]: https://github.com/Keithland89/ValueLens-for-Microsoft-Copilot/blob/main/2.%20Fabric/notebooks/Copilot_Org_Data_Direct_Ingester.ipynb
 | `Ingest_CommercialTerms.ipynb` | **Azure Cost Management API** — no file | `commercial_terms` *(optional)* |
 
 **GitHub is the one source that can run unattended.** Use `Ingest_GitHub_API.ipynb` and you never

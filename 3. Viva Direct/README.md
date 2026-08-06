@@ -87,7 +87,7 @@ A CreditLens variant with the connector in place exists at `CreditLens-VivaDirec
 |---|---|---|
 | `VivaPartitionId` | **required** | Partition identifier, from **Connect data** |
 | `VivaQueryId` | **required** | Query identifier, from the same dialog |
-| `EntraCsvPath` | *supply this* | a directory export — the **only** route to department grouping |
+| `EntraCsvPath` | *supply this* | a directory export — the **only** route to department grouping. See **[docs/ORG-DATA.md](../docs/ORG-DATA.md)** for scripts and scheduling |
 | `VivaExportName` | *leave blank* | override, only if auto-detection fails |
 
 The export's tables are prefixed with the export's own name, and the two shapes differ
