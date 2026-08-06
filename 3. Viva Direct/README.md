@@ -81,16 +81,22 @@ A CreditLens variant with the connector in place exists at `CreditLens-VivaDirec
 
 ### What it asks you for
 
+**Two identifiers — the same two the dialog gives you.**
+
 | Parameter | | |
 |---|---|---|
-| `VivaPartitionId` | **required** | from the Connect data dialog |
-| `VivaQueryId` | **required** | from the same dialog |
-| `VivaExportName` | **required** | `IdentifiableAiConsumptionWeeklyExport` or `AiConsumptionWeeklyExport` — see the table-name warning above |
-| `EntraCsvPath` | *optional* | a directory export, for department/cost-centre grouping |
+| `VivaPartitionId` | **required** | Partition identifier, from **Connect data** |
+| `VivaQueryId` | **required** | Query identifier, from the same dialog |
+| `EntraCsvPath` | *supply this* | a directory export — the **only** route to department grouping |
+| `VivaExportName` | *leave blank* | override, only if auto-detection fails |
 
-**Everything Cowork comes from the connector** — the metrics, the seat roster and the spending
-policy names and limits. There were four more CSV parameters here until recently and they were all
-wrong to have:
+The export's tables are prefixed with the export's own name, and the two shapes differ
+(`IdentifiableAiConsumptionWeeklyExport` vs `AiConsumptionWeeklyExport`). Rather than make you type
+it, the template **tries both** — a wrong table name returns `Bad request`, which is catchable, so
+detection costs at most one extra request and you type nothing. `VivaExportName` overrides it if
+Microsoft ever adds a shape this list doesn't know.
+
+Four CSV parameters used to sit here and all were wrong to have:
 
 - `VivaMetricsCsvPath` had **zero references**. Dead weight in the prompt.
 - `VivaPeopleCsvPath`, `VivaPolicyCsvPath` and `PersonMapCsvPath` fed a file-based seat roster that
@@ -99,14 +105,32 @@ wrong to have:
   roster. Every page then reads zero credits against a full set of seat limits, which looks like a
   broken measure rather than a mismatched file.
 
-### Why an org file is still here
+### Why an org file is here
 
-The connector does not carry org attributes. A de-identified export has one (`Organization`); an
-identified export has none, because with real UPNs Viva expects you to join to your own directory.
+**The Consumption Dashboard export does not carry org attributes. You supply them.**
 
-So `EntraCsvPath` is the only source of department, job title, cost centre, country and manager —
-everything the Group By control offers beyond usage intensity. Leave it blank and every credit and
-cost figure is still correct; you simply cannot break them down.
+Measured against a live identified export — four table names tried, two answered:
+
+| Table | Result |
+|---|---|
+| `…Data_UserAIConsumptionActivity` | ✅ `UserPrincipalName`, `EntraId`, `ServiceId`, `ServiceName`, `SpendingPolicyId`, `MetricDate`, `Session count`, `Spending policy limit`, `Total Copilot Credits used`, `User limit` |
+| `…Data_AIConsumptionPlans` | ✅ `SpendingPolicyId`, `Name`, `PlanLimit`, `UserLimit`, `IncludedServices` |
+| `…Data_HR` | ❌ Bad request |
+| `…Data_PeopleHistorical` | ❌ Bad request |
+
+No department, job title, cost centre, country or manager anywhere. Viva gives you the identity —
+UPN and Entra ID — and expects you to join it to your own directory, which is where those attributes
+live and where they are richer than anything Viva holds.
+
+So `EntraCsvPath` is the **only** route to department grouping. It is optional in the sense that the
+report works without it: every credit and cost figure is correct, the trend and forecast are correct,
+and Group By simply falls back to usage intensity. It is not optional if you want to answer "which
+department is spending this".
+
+> **A Microsoft template downloaded on 31 July for the de-identified export declared an `HR` table
+> with `Organization` and `FunctionType`.** We could not confirm that against a live de-identified
+> query — the tenant we tested had an identified one — and the export shape appears to have moved
+> since. Treat it as unverified: **plan on supplying org data yourself either way.**
 
 > **If Group By is empty, check the UPNs match.** A directory export for a different tenant matches
 > nobody and fills the department table with people who have no credits. That is a mismatched file,
@@ -122,23 +146,21 @@ VivaInsights.Data(
     [
         SchemaType = "Pivoted",
         APIType    = "Row-level data",
-        TableName  = VivaExportName & "Data_UserAIConsumptionActivity"
+        TableName  = VivaExportPrefix & "Data_UserAIConsumptionActivity"
     ]
 )
 ```
 
-The signature was originally read out of Power BI Desktop's connector registry and is now confirmed
+The signature was originally read out of Power BI Desktop's connector registry and is confirmed
 against Microsoft's own generated template, which issues exactly this call.
 
 Everything downstream is unchanged. The column normalisation that copes with both export shapes
 copes with the connector too — including the connector's lack of a `PersonId` column, which the
 loader synthesises from the UPN.
 
-**Policy names come from the connector.** The identified export's query result carries a second
-table, `<export>Data_AIConsumptionPlans`, with `Name`, `PlanLimit`, `UserLimit` and
-`IncludedServices`. This corrects an earlier note in these docs claiming policy names had no
-connector equivalent; they do. De-identified exports carry an `HR` table instead and still show
-policies as GUIDs. Pricing is unaffected either way — the limits travel inline on the metrics rows.
+**Policy names come from the connector**, via the plans table above. This corrects an earlier note in
+these docs claiming they had no connector equivalent. Pricing is unaffected either way — the limits
+travel inline on the metrics rows.
 
 ---
 
