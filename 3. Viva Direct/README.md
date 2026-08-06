@@ -1,36 +1,47 @@
 # 3. Viva Direct
 
-Connect straight to the Consumption Dashboard through the certified Viva Insights connector — no
-files, no notebooks, native scheduled refresh.
+Connect straight to Viva Insights through the certified connector — no files, no notebooks, native
+scheduled refresh.
+
+**`CreditLens - Viva Direct.pbit`** is in this folder. Open it, paste two identifiers, done.
 
 ---
 
 ## Status: working
 
-The connection completes. Microsoft's own downloadable template returns data on a tenant with the
-Analyst role, and the identifiers come from the Consumption Dashboard's **Connect data** dialog.
+Verified end to end on a live tenant: the connector returned real UPNs and credit figures matching
+the CSV export of the same query, exactly.
 
-| Tab | For |
-|---|---|
-| **Power BI** | Also offers **Download Power BI template** — Microsoft's own starter template |
-| **Microsoft Fabric** | Dataflow Gen2, documented at [export-query-data-microsoft-fabric][d1] |
+**Use a custom query.** Viva Insights → **Analysis** → create an analysis with the Copilot credit
+metrics → turn on **Auto-refresh**. Then **Analysis results** → your query → the **Link** icon for
+the two identifiers.
+
+| | Custom query *(recommended)* | Consumption Dashboard export |
+|---|---|---|
+| Auto-refresh | ✅ | ❌ |
+| Real UPNs under identification | ✅ | ✅ |
+| Org attributes | ✅ *analyst chooses* | ❌ |
+| `VivaExportName` | **leave blank** | must be set — see below |
+| Policy names | in-query column | separate table, read automatically |
 
 **A model wired for it exists** at `CreditLens-VivaDirect` — see [Already wired](#already-wired).
 
-> **The one thing that will catch you out: `Table name` must not be left blank.**
+> **If you use the Consumption Dashboard export, `VivaExportName` must be set.**
 >
-> The Consumption Dashboard export is a **multi-table** query result, and the connector fails with a
-> bare `(500): Internal Server Error` when you omit the table name — it does not say a table name is
+> That export is a **multi-table** query result and the connector fails with a bare
+> `(500): Internal Server Error` when the table name is missing — it does not say a table name is
 > needed. The Learn article lists Glint, Copilot business impact and Skills landscape as the
 > multi-table queries and does not mention this one, so there is nothing to warn you.
 >
-> | Export | Table name |
+> | Export | `VivaExportName` |
 > |---|---|
-> | Identified | `IdentifiableAiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
-> | De-identified | `AiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+> | Identified | `IdentifiableAiConsumptionWeeklyExport` |
+> | De-identified | `AiConsumptionWeeklyExport` |
 >
-> Verify yours: **Download Power BI template** from the same dialog, open it, and read the table
-> names in Power Query. Whatever precedes `Data_` is your export name.
+> Verify yours: **Download Power BI template** from the same dialog, open it, and read a table name
+> in Power Query. Whatever precedes `Data_` is your export name.
+>
+> A custom query returns a single table, so none of this applies — leave the parameter blank.
 
 ---
 

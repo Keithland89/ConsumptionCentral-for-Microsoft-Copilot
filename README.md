@@ -46,7 +46,7 @@ differ only in *how the data gets in and how it refreshes*.
 |---|---|---|
 | **[1. Local CSV](1.%20Local%20CSV/)** · *simplest* | You want to see it working today, or you report monthly by hand. | Download the exports, unzip, point five parameters at the folder. Power BI Pro only. |
 | **[2. Fabric](2.%20Fabric/)** · *recommended* | You want scheduled refresh and history that outlives the export window. | Fabric capacity (or Premium/PPU). Notebooks land the exports in a Lakehouse; the template reads the SQL analytics endpoint. |
-| **[3. Viva Direct](3.%20Viva%20Direct/)** · *experimental* | You want Cowork data with no file handling at all. | The certified Viva Insights connector. **Read the folder README first — this path is not yet confirmed to carry credit data.** |
+| **[3. Viva Direct](3.%20Viva%20Direct/)** · *no files* | You want Cowork data with no file handling at all, refreshing itself. | The certified Viva Insights connector and two identifiers. A **custom query** with Auto-refresh on is the source to use. |
 
 **Not sure?** Start with **Local CSV**. It takes about ten minutes and tells you whether the numbers
 are worth automating. Move to **Fabric** once you want them weekly without anyone remembering to
@@ -165,7 +165,7 @@ detects that nothing is changing and says so instead of forecasting a cliff.
 ```
 1. Local CSV/        the simplest path — CSVs on disk or a synced folder
 2. Fabric/           notebooks + Lakehouse + scheduled refresh
-3. Viva Direct/      the certified Viva Insights connector (experimental)
+3. Viva Direct/      the certified Viva Insights connector — no files at all
 docs/                data sources, measures, build steps, testing
 Images/              screenshots
 ```
@@ -181,8 +181,8 @@ This is a **first scaffold**. Before it goes public:
 | Commercial terms parameterised | ✅ Verified by flexing rates |
 | No hardcoded figures in any card or headline | ✅ Audited |
 | Documentation, cited | ✅ |
-| `.pbit` files | ⏳ [docs/BUILD.md](docs/BUILD.md) |
-| Viva connector path | ❓ [test procedure](3.%20Viva%20Direct/TEST-PROCEDURE.md) |
+| `.pbit` files | ✅ All three, verified for leaks |
+| Viva connector path | ✅ Live on a real tenant — figures match the CSV export exactly |
 | GitHub API ingester | ⏳ Written, needs a live enterprise to confirm |
 
 **→ [docs/TESTING.md](docs/TESTING.md)** has the steps for everything still open.

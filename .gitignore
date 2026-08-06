@@ -37,3 +37,11 @@ venv/
 
 # Fabric notebook checkpoints
 .ipynb_checkpoints/
+
+# PBIP working projects. The deliverables are the .pbit files, not the projects.
+# A project keeps parameter VALUES on disk, so committing one publishes whatever
+# tenant identifiers or local paths were last used. A .pbit does not - template
+# export strips every parameter value. Two projects reached a commit this way.
+*.pbip
+*.Report/
+*.SemanticModel/
