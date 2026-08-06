@@ -77,9 +77,42 @@ not row-level. Check them before clicking Load.
 
 ## Already wired
 
-A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`. It adds three
-parameters — `VivaPartitionId`, `VivaQueryId` and `VivaExportName` — and swaps the metrics source
-from CSV to:
+A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`.
+
+### What it asks you for
+
+| Parameter | | |
+|---|---|---|
+| `VivaPartitionId` | **required** | from the Connect data dialog |
+| `VivaQueryId` | **required** | from the same dialog |
+| `VivaExportName` | **required** | `IdentifiableAiConsumptionWeeklyExport` or `AiConsumptionWeeklyExport` — see the table-name warning above |
+| `EntraCsvPath` | *optional* | a directory export, for department/cost-centre grouping |
+
+**Everything Cowork comes from the connector** — the metrics, the seat roster and the spending
+policy names and limits. There were four more CSV parameters here until recently and they were all
+wrong to have:
+
+- `VivaMetricsCsvPath` had **zero references**. Dead weight in the prompt.
+- `VivaPeopleCsvPath`, `VivaPolicyCsvPath` and `PersonMapCsvPath` fed a file-based seat roster that
+  **silently outranked the connector**. Point them at another tenant's export — or at the sample data
+  in this repo — and you get a roster of people with no usage joined to usage by people not on the
+  roster. Every page then reads zero credits against a full set of seat limits, which looks like a
+  broken measure rather than a mismatched file.
+
+### Why an org file is still here
+
+The connector does not carry org attributes. A de-identified export has one (`Organization`); an
+identified export has none, because with real UPNs Viva expects you to join to your own directory.
+
+So `EntraCsvPath` is the only source of department, job title, cost centre, country and manager —
+everything the Group By control offers beyond usage intensity. Leave it blank and every credit and
+cost figure is still correct; you simply cannot break them down.
+
+> **If Group By is empty, check the UPNs match.** A directory export for a different tenant matches
+> nobody and fills the department table with people who have no credits. That is a mismatched file,
+> not a broken report, and it is the most common cause of one looking broken.
+
+### The connector call
 
 ```m
 VivaInsights.Data(
@@ -94,23 +127,18 @@ VivaInsights.Data(
 )
 ```
 
-`VivaExportName` is `IdentifiableAiConsumptionWeeklyExport` or `AiConsumptionWeeklyExport` — see the
-table-name warning above. It is a parameter rather than a constant because the two export shapes
-name their tables differently, and getting it wrong produces a 500 with no explanation.
-
-The signature was originally read out of Power BI Desktop's connector registry, and is now confirmed
+The signature was originally read out of Power BI Desktop's connector registry and is now confirmed
 against Microsoft's own generated template, which issues exactly this call.
 
-Everything downstream is unchanged. The column normalisation that already copes with both export
-shapes copes with the connector too — including the connector's lack of a `PersonId` column, which
-the loader synthesises from the UPN.
+Everything downstream is unchanged. The column normalisation that copes with both export shapes
+copes with the connector too — including the connector's lack of a `PersonId` column, which the
+loader synthesises from the UPN.
 
-**Policy names come from the connector too, on an identified export.** The query result carries a
-second table, `<export>Data_AIConsumptionPlans`, with `Name`, `PlanLimit`, `UserLimit` and
-`IncludedServices` — so `SpendingPolicyMetadata.csv` is now only a fallback. This corrects an
-earlier note in these docs claiming policy names had no connector equivalent; they do. De-identified
-exports carry an `HR` table instead and still show policies as GUIDs. Pricing is unaffected either
-way, since the limits travel inline on the metrics rows.
+**Policy names come from the connector.** The identified export's query result carries a second
+table, `<export>Data_AIConsumptionPlans`, with `Name`, `PlanLimit`, `UserLimit` and
+`IncludedServices`. This corrects an earlier note in these docs claiming policy names had no
+connector equivalent; they do. De-identified exports carry an `HR` table instead and still show
+policies as GUIDs. Pricing is unaffected either way — the limits travel inline on the metrics rows.
 
 ---
 
