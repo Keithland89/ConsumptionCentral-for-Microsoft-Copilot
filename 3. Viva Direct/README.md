@@ -98,6 +98,50 @@ GUIDs. Pricing is unaffected: the limits travel inline on the metrics rows.
 
 ---
 
+## Troubleshooting the connection
+
+### `(500): Internal Server Error` on refresh
+
+```
+Web.Contents failed to get contents from
+'https://api.analysis.insights.svc.cloud.microsoft/v1.0/tenants/{tenant}
+ /scopes/{partition}/reports/{query}/result' (500)
+```
+
+**Good news first: this is not an authentication failure.** Auth failures come back as `403
+Forbidden`. A 500 means the service accepted your token *and* the request, then failed producing the
+result — so the tenant permission (Analyst role) is in place.
+
+The argument order is also fine. Your **query** identifier appears in the `reports/` position and
+your **partition** identifier in `scopes/`, which is what the service expects — so the M in
+`CreditLens-VivaDirect` is putting both GUIDs where they belong.
+
+That leaves three candidates, all beyond the connector:
+
+| Candidate | How to check |
+|---|---|
+| **The query has never produced a result.** A query can be defined without having been run, and `/result` has nothing to return. | Viva Insights → **Analysis results**. The query should show a completed run with a row count, not just "created". Run it once and retry. |
+| **The Advanced settings do not suit this query.** `Row-level data` and `Pivoted` are the only supported values, but a query that was set up to return aggregated output may reject them server-side. | Re-check the download dialog. If it offers a choice, take the one that matches what you set. |
+| **The partition identifier is not the one the dashboard issued.** Ours resolved to the tenant GUID, which *may* be right — or may be a paste of the wrong field. | Re-copy both from **Consumption Dashboard → download → Connect data → Power BI**, and confirm the partition really is a distinct value rather than your tenant ID. |
+
+### The test that separates "our M" from "the service"
+
+Two minutes, and it is worth doing before anything else:
+
+1. New Power BI Desktop file
+2. **Get Data → Online Services → Viva Insights**
+3. Enter the **same two identifiers**, Advanced → `Pivoted` / `Row-level data`
+
+- **Native connection also fails with 500** — the template is not the problem. The fix belongs in
+  Viva Insights: run the query, or check what the dashboard is actually offering to export.
+- **Native connection succeeds** — then our M differs from what the dialog generates. View the
+  generated query (*Advanced Editor*), send it over, and we match it exactly.
+
+Everything downstream of `VivaConnectorSource` is shared with the CSV path and already proven, so a
+working connector call is the only missing piece.
+
+---
+
 ## Scheduled refresh
 
 Two things must both be true, or the report goes stale while appearing to refresh:
