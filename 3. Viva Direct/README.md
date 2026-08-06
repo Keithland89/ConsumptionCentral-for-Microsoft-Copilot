@@ -5,27 +5,32 @@ files, no notebooks, native scheduled refresh.
 
 ---
 
-## Status: confirmed to exist, not yet confirmed to work
+## Status: working
 
-**The connection is real.** The Consumption Dashboard's own export dialog has a **Connect data**
-button that hands you a **Partition identifier** and a **Query identifier**, under two tabs:
+The connection completes. Microsoft's own downloadable template returns data on a tenant with the
+Analyst role, and the identifiers come from the Consumption Dashboard's **Connect data** dialog.
 
 | Tab | For |
 |---|---|
 | **Power BI** | Also offers **Download Power BI template** — Microsoft's own starter template |
 | **Microsoft Fabric** | Dataflow Gen2, documented at [export-query-data-microsoft-fabric][d1] |
 
-So this is not a guess about whether Analyst Workbench queries happen to carry credit data. The
-Consumption Dashboard publishes identifiers specifically for this purpose.
+**A model wired for it exists** at `CreditLens-VivaDirect` — see [Already wired](#already-wired).
 
-**What is not yet confirmed** is that a given tenant can actually use it. Our first attempt returned
-**access forbidden**, which looks like a tenant-side permission rather than anything in the
-connection — most likely the Viva Insights **Analyst** role, or connector access not yet granted.
-
-Until someone completes the round trip, this folder ships a test procedure rather than a template.
-**[TEST-PROCEDURE.md](TEST-PROCEDURE.md)** makes the test decisive in about ten minutes.
-
-**A model wired for it already exists** — see [Already wired](#already-wired) below.
+> **The one thing that will catch you out: `Table name` must not be left blank.**
+>
+> The Consumption Dashboard export is a **multi-table** query result, and the connector fails with a
+> bare `(500): Internal Server Error` when you omit the table name — it does not say a table name is
+> needed. The Learn article lists Glint, Copilot business impact and Skills landscape as the
+> multi-table queries and does not mention this one, so there is nothing to warn you.
+>
+> | Export | Table name |
+> |---|---|
+> | Identified | `IdentifiableAiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+> | De-identified | `AiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+>
+> Verify yours: **Download Power BI template** from the same dialog, open it, and read the table
+> names in Power Query. Whatever precedes `Data_` is your export name.
 
 ---
 
@@ -72,29 +77,40 @@ not row-level. Check them before clicking Load.
 
 ## Already wired
 
-A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`. It adds two
-parameters — `VivaPartitionId` and `VivaQueryId` — and swaps the metrics source from CSV to:
+A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`. It adds three
+parameters — `VivaPartitionId`, `VivaQueryId` and `VivaExportName` — and swaps the metrics source
+from CSV to:
 
 ```m
 VivaInsights.Data(
     VivaPartitionId,
     null,                    // Query Name - blank
     VivaQueryId,
-    [SchemaType = "Pivoted", APIType = "Row-level data"]
+    [
+        SchemaType = "Pivoted",
+        APIType    = "Row-level data",
+        TableName  = VivaExportName & "Data_UserAIConsumptionActivity"
+    ]
 )
 ```
 
-Microsoft does not publish that function's signature. It was read out of Power BI Desktop's own
-connector registry, which declares `VivaInsights.Data` with an options record at position 3 —
-meaning arguments 0–2 are the three dialog fields in dialog order. The model loads, so the name and
-arity are right; what remains untested is the round trip to real data.
+`VivaExportName` is `IdentifiableAiConsumptionWeeklyExport` or `AiConsumptionWeeklyExport` — see the
+table-name warning above. It is a parameter rather than a constant because the two export shapes
+name their tables differently, and getting it wrong produces a 500 with no explanation.
+
+The signature was originally read out of Power BI Desktop's connector registry, and is now confirmed
+against Microsoft's own generated template, which issues exactly this call.
 
 Everything downstream is unchanged. The column normalisation that already copes with both export
-shapes will cope with the connector too, provided it returns the same columns.
+shapes copes with the connector too — including the connector's lack of a `PersonId` column, which
+the loader synthesises from the UPN.
 
-**One known gap.** Spending policy *names* have no connector equivalent — the dashboard exposes one
-query result, and names live in `SpendingPolicyMetadata.csv`. Without that file, policies show as
-GUIDs. Pricing is unaffected: the limits travel inline on the metrics rows.
+**Policy names come from the connector too, on an identified export.** The query result carries a
+second table, `<export>Data_AIConsumptionPlans`, with `Name`, `PlanLimit`, `UserLimit` and
+`IncludedServices` — so `SpendingPolicyMetadata.csv` is now only a fallback. This corrects an
+earlier note in these docs claiming policy names had no connector equivalent; they do. De-identified
+exports carry an `HR` table instead and still show policies as GUIDs. Pricing is unaffected either
+way, since the limits travel inline on the metrics rows.
 
 ---
 

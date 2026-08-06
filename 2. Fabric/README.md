@@ -4,12 +4,22 @@ Land the exports in a Fabric Lakehouse, read them through the SQL analytics endp
 schedule.
 
 **Why bother?** One reason above all others: **the Viva Insights consumption export only reaches back
-6 months, and there is no API.** Every week you don't capture is gone permanently. This path
-accumulates history in a Delta table that outlives the export window — so a year from now you have a
-year of trend, not the same rolling six months.
+6 months.** Every week you don't capture is gone permanently. This path accumulates history in a
+Delta table that outlives the export window — so a year from now you have a year of trend, not the
+same rolling six months.
 
 You also get: scheduled refresh, sub-second pages on large tenants, and a single governed copy of the
 data rather than CSVs on someone's laptop.
+
+> **You may not need to download anything.** Viva Insights ships a **Dataflow Gen2** connector that
+> writes query results straight into a Lakehouse on a schedule —
+> [export-query-data-microsoft-fabric][vivafabric]. Set the query to auto-refresh in Viva Insights,
+> schedule the Dataflow for **Tuesday ~8am PST** (after Viva's weekend refresh), and the Viva half of
+> this pipeline runs itself. See [Automating the Viva load](#automating-the-viva-load).
+>
+> Earlier versions of this page said there was no scheduled export. That was wrong.
+
+[vivafabric]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
 
 **You need** Fabric capacity, Premium, or PPU. If you only have Power BI Pro, use
 **[1. Local CSV](../1.%20Local%20CSV/)**.
@@ -164,7 +174,7 @@ Three of the four sources need someone to download a file. One does not.
 | Source | Automatable? | Cadence | Why |
 |---|---|---|---|
 | **GitHub AI usage** | ✅ **Fully** | Nightly or monthly | Dedicated API endpoints, 24 months of history |
-| Viva consumption | ❌ Manual | **Weekly** | No API, no scheduled export; 6-month window, so don't drift |
+| Viva consumption | ⚠️ Manual *or* [Dataflow Gen2](#automating-the-viva-load) | **Weekly** | 6-month window, so don't drift |
 | Copilot Studio | ❌ Manual | Monthly | CSV download only; ~3 months available |
 | Entra org | ⚠️ Scriptable | Quarterly, or after a reorg | Graph PowerShell works; slow-moving anyway |
 
@@ -189,6 +199,49 @@ The template uses `Sql.Database()`, which speaks to anything exposing these tabl
 
 The notebooks are PySpark and run unchanged on Databricks or Synapse Spark. Only the connection
 parameters change.
+
+---
+
+## Automating the Viva load
+
+The Viva half of this pipeline does not have to be a manual download. Viva Insights ships a
+**Dataflow Gen2** connector that writes query results directly into a Lakehouse table on a schedule:
+[export-query-data-microsoft-fabric][vivafabric].
+
+1. **Fabric** → your workspace → **New → Dataflow Gen2** → **Get data** → **Online Services** →
+   **Viva Insights**
+2. Partition identifier and Query identifier from the Consumption Dashboard's **Connect data**
+   dialog. **Query Name blank.**
+3. Advanced: Schema type **Pivoted**, Data granularity **Row-level data**, and — the one that catches
+   people — **Table name**:
+
+   | Export | Table name |
+   |---|---|
+   | Identified | `IdentifiableAiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+   | De-identified | `AiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+
+   Leave it blank and the connector fails with a bare `(500): Internal Server Error`. It does not
+   tell you a table name is needed. See [3. Viva Direct](../3.%20Viva%20Direct/) for how to confirm
+   yours.
+4. Set the **data destination** to your Lakehouse, writing `viva_credits_weekly`. Match the columns
+   in [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md#viva_credits_weekly) and the template reads
+   it with no change.
+5. **Both** refreshes must be on, or the report goes stale while appearing to refresh:
+   - **Auto-refresh** on the query, in Viva Insights → Analysis results
+   - **Scheduled refresh** on the Dataflow — Microsoft suggests **Tuesday ~8am PST**, after Viva's
+     weekend refresh
+
+> **Also grab the plans table.** A second connection with table name
+> `<export>Data_AIConsumptionPlans` gives you spending policy *names* and limits — write it to
+> `viva_spending_policy` and policies stop showing as GUIDs. Identified exports only; de-identified
+> ones carry `HR` in that slot instead.
+
+**Dataflow Gen2 consumes Fabric Capacity Units**, unlike running a notebook over a file you dropped
+in. On a small tenant the notebook route may well be cheaper. Both are supported — the notebooks are
+not deprecated by this.
+
+Studio, GitHub CSV and Org have no equivalent. GitHub has a real API, so
+[`Ingest_GitHub_API.ipynb`](notebooks/Ingest_GitHub_API.ipynb) already runs unattended.
 
 ---
 

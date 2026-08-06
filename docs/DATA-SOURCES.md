@@ -80,9 +80,27 @@ in your jurisdiction, before you turn it on.
 Use **weekly** for CreditLens. Every Cowork page is built on weekly grain, and the forecast fits its
 trend across whatever weeks you load.
 
-There is **no scheduled CSV export and no API** — each run is a point-in-time download. That is the
-single best reason to move to the [Fabric path](../2.%20Fabric/), which accumulates history beyond
-the window the export itself can reach.
+There is **no scheduled CSV export and no REST API** — each CSV run is a point-in-time download. But
+there *is* a certified **Power Query connector**, which changes the picture considerably:
+
+- **Power BI** — connect direct from Desktop, refresh on a schedule.
+  See [3. Viva Direct](../3.%20Viva%20Direct/).
+  ([Learn][pbiconn])
+- **Fabric** — a Dataflow Gen2 writes query results straight into a Lakehouse table on a schedule.
+  See [Automating the Viva load](../2.%20Fabric/README.md#automating-the-viva-load).
+  ([Learn][fabconn])
+
+Either way, **auto-refresh must also be enabled on the query itself** in Viva Insights → Analysis
+results. Miss that and the report refreshes happily against a result that never changes.
+
+Accumulating history beyond the 6-month window is still the best reason to move to the
+[Fabric path](../2.%20Fabric/) — the connector reaches only as far back as the export does.
+
+> **Correction.** Earlier versions of this document said there was no scheduled export at all. There
+> is one, via the connector; what does not exist is a REST endpoint you can `curl`.
+
+[pbiconn]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/power-bi-connector
+[fabconn]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
 
 ### Files and columns
 

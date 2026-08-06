@@ -1,6 +1,6 @@
 # Automating the landing step
 
-Three of CreditLens's four sources have **no API** — Viva consumption, Copilot Studio, and Entra org
+Three of CreditLens's four sources have **no REST API** — Viva consumption, Copilot Studio, and Entra org
 attributes all have to be exported by hand. Only GitHub can be pulled directly, which
 [`Ingest_GitHub_API.ipynb`](../notebooks/Ingest_GitHub_API.ipynb) does.
 
@@ -72,7 +72,7 @@ A flow can only react to a file that shows up. How each source gets there:
 
 | Source | Reality |
 |---|---|
-| **Viva consumption** | Manual download, then mail it to the watched mailbox or drop it in the library. No scheduled export exists. |
+| **Viva consumption** | Manual download, then mail it to the watched mailbox or drop it in the library. **Or skip the flow entirely** — a [Dataflow Gen2](../README.md#automating-the-viva-load) writes query results straight to the Lakehouse on a schedule. |
 | **Copilot Studio** | Same — PPAC is download-only. |
 | **GitHub** | The report is *emailed to you*, so the email flow can catch it with no human step at all. Better still, skip it and use the API notebook. |
 | **Entra org** | Schedule the Graph PowerShell snippet in [DATA-SOURCES.md](../../docs/DATA-SOURCES.md) and have it write to the SharePoint library. Fully automatable. |
