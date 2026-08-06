@@ -85,16 +85,33 @@ A CreditLens variant with the connector in place exists at `CreditLens-VivaDirec
 
 | Parameter | | |
 |---|---|---|
-| `VivaPartitionId` | **required** | Partition identifier, from **Connect data** |
-| `VivaQueryId` | **required** | Query identifier, from the same dialog |
-| `EntraCsvPath` | *supply this* | a directory export — the **only** route to department grouping. See **[docs/ORG-DATA.md](../docs/ORG-DATA.md)** for scripts and scheduling |
-| `VivaExportName` | *leave blank* | override, only if auto-detection fails |
+| `VivaPartitionId` | **required** | Partition identifier, from **Analysis results → Link** |
+| `VivaQueryId` | **required** | Query identifier, from the same place |
+| `EntraCsvPath` | *only if needed* | a directory export — see [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
+| `VivaExportName` | *leave blank* | only for a Consumption Dashboard export — see below |
 
-The export's tables are prefixed with the export's own name, and the two shapes differ
-(`IdentifiableAiConsumptionWeeklyExport` vs `AiConsumptionWeeklyExport`). Rather than make you type
-it, the template **tries both** — a wrong table name returns `Bad request`, which is catchable, so
-detection costs at most one extra request and you type nothing. `VivaExportName` overrides it if
-Microsoft ever adds a shape this list doesn't know.
+### Use a custom query
+
+**Viva Insights → Analysis → create an analysis → Copilot credit metrics → Auto-refresh on.**
+
+A custom query beats the Consumption Dashboard export on every axis that matters here:
+
+| | Custom query | Consumption Dashboard |
+|---|---|---|
+| Auto-refresh | ✅ | ❌ |
+| Real UPNs under identification | ✅ | ✅ |
+| Org attributes | ✅ *analyst chooses* | ❌ |
+| Table name needed | ❌ **none** | ✅ and getting it wrong gives a bare 500 |
+| Policy names | in-query column | separate table |
+
+**Verified live on both.** A custom query returns one table with
+`UserPrincipalName, EntraId, ServiceId, ServiceName, SpendingPolicyId, MetricDate, Session count,
+Spending policy limit, Total Copilot Credits used, User limit, PeopleHistoricalId` — no table name
+required. Six candidate table names were tried; only *no name* and `MetricOutput` worked.
+
+**So leave `VivaExportName` blank.** Set it only for a Consumption Dashboard export, to
+`IdentifiableAiConsumptionWeeklyExport` or `AiConsumptionWeeklyExport`. That export is multi-table
+and its tables are named after it, which is why the name is needed there and nowhere else.
 
 Four CSV parameters used to sit here and all were wrong to have:
 

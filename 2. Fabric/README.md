@@ -211,21 +211,32 @@ The Viva half of this pipeline does not have to be a manual download. Viva Insig
 **Dataflow Gen2** connector that writes query results directly into a Lakehouse table on a schedule:
 [export-query-data-microsoft-fabric][vivafabric].
 
+> **Use a custom query, not the Consumption Dashboard export.** The Learn article tells you to get
+> the identifiers from **Analysis results** — which is where custom queries live. That is the
+> intended route, and it is better in three ways:
+>
+> - **It auto-refreshes.** Turn on Auto-refresh on the query and the source keeps itself current.
+> - **It returns a single table**, so `Table name` stays blank. The Consumption Dashboard export is
+>   multi-table and needs the right name or the connector fails with a bare 500.
+> - **The analyst chooses the columns**, including org attributes — which can remove the need for a
+>   separate directory export entirely.
+>
+> Both work. The custom query is simply less to get wrong.
+
 1. **Fabric** → your workspace → **New → Dataflow Gen2** → **Get data** → **Online Services** →
    **Viva Insights**
-2. Partition identifier and Query identifier from the Consumption Dashboard's **Connect data**
-   dialog. **Query Name blank.**
-3. Advanced: Schema type **Pivoted**, Data granularity **Row-level data**, and — the one that catches
-   people — **Table name**:
+2. **Analysis results** → your query → the **Link** icon → copy the **Partition identifier** and
+   **Query identifier**. **Query Name blank.**
+3. Advanced: Schema type **Pivoted**, Data granularity **Row-level data**, **Table name**:
 
-   | Export | Table name |
+   | Source | Table name |
    |---|---|
-   | Identified | `IdentifiableAiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
-   | De-identified | `AiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+   | **Custom query** | **leave blank** |
+   | Consumption Dashboard, identified | `IdentifiableAiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
+   | Consumption Dashboard, de-identified | `AiConsumptionWeeklyExportData_UserAIConsumptionActivity` |
 
-   Leave it blank and the connector fails with a bare `(500): Internal Server Error`. It does not
-   tell you a table name is needed. See [3. Viva Direct](../3.%20Viva%20Direct/) for how to confirm
-   yours.
+   Leave it blank on a multi-table export and the connector fails with a bare
+   `(500): Internal Server Error`. It does not tell you a table name is needed.
 4. Set the **data destination** to your Lakehouse, writing `viva_credits_weekly`. Match the columns
    in [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md#viva_credits_weekly) and the template reads
    it with no change.
@@ -234,10 +245,15 @@ The Viva half of this pipeline does not have to be a manual download. Viva Insig
    - **Scheduled refresh** on the Dataflow — Microsoft suggests **Tuesday ~8am PST**, after Viva's
      weekend refresh
 
-> **Also grab the plans table.** A second connection with table name
-> `<export>Data_AIConsumptionPlans` gives you spending policy *names* and limits — write it to
-> `viva_spending_policy` and policies stop showing as GUIDs. Identified exports only; de-identified
-> ones carry `HR` in that slot instead.
+> **Org attributes, free.** If the custom query includes department, job family or similar, write
+> them to `org_attributes` from the same Dataflow. They will always match the people in the metrics,
+> which a separate directory export cannot guarantee. See
+> [docs/ORG-DATA.md](../docs/ORG-DATA.md#where-org-data-comes-from).
+
+> **A Consumption Dashboard export also publishes policy names** as a second table,
+> `<export>Data_AIConsumptionPlans`. Add a second connection for it and write `viva_spending_policy`,
+> and policies stop showing as GUIDs. A custom query has no equivalent — include a policy name column
+> in the query itself instead.
 
 **Dataflow Gen2 consumes Fabric Capacity Units**, unlike running a notebook over a file you dropped
 in. On a small tenant the notebook route may well be cheaper. Both are supported — the notebooks are
