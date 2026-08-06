@@ -7,6 +7,10 @@ beyond usage intensity.
 Copilot Studio gives you an email, GitHub gives you a handle. Every organisational attribute comes
 from your directory, and you supply it.
 
+> **One exception, and it is the good one.** A Viva Insights **custom query** can carry org
+> attributes with the credit metrics, even with identification enabled. Where you have that,
+> CreditLens uses it and you supply nothing. See [Where org data comes from](#where-org-data-comes-from).
+
 That is not a gap in the template. Your directory holds richer and more current org data than any
 consumption export would, and it is the same directory all three products can be joined back to.
 
@@ -29,7 +33,31 @@ org_attributes ──┬── user_principal_name ──── Cowork / Work IQ
 
 ---
 
-## Three ways to get it
+## Where org data comes from
+
+**Best case: it comes with your Viva query and you supply nothing.**
+
+A Viva Insights **custom query** can carry org attributes alongside the credit metrics — the analyst
+picks which ones come out, and they survive identification. Where that is what you have, CreditLens
+uses them and no directory export is needed. They also always match the people in the metrics,
+because they came out of the same query.
+
+A **Consumption Dashboard** export carries none, so a directory export is the only route.
+
+**Order of preference**, checked automatically:
+
+| | Source | Keyed by |
+|---|---|---|
+| 1 | Org columns on the Viva metrics rows | UPN |
+| 2 | Org columns on `PeopleMetaData` | `PeopleHistoricalId`, mapped to UPN via the metrics file |
+| 3 | A directory export | UPN |
+
+Viva wins when present. A file that travelled with the metrics beats one that might describe a
+different set of people.
+
+---
+
+## Three ways to get it, when you need it
 
 All three produce the same shape. Pick by how you deploy.
 

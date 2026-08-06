@@ -79,7 +79,7 @@ Each path README carries the full click-path, the role required, and the gotchas
 
 | Source | Where it comes from | Grain | History | Automatable? |
 |---|---|---|---|---|
-| **Cowork / Work IQ credits** | Viva Insights web app → Consumption Dashboard → export | Person × week | 6 months (weekly) / 28 days (daily) | ⚠️ Connector, not REST |
+| **Cowork / Work IQ credits** | Viva Insights → **custom query** *(recommended — auto-refreshes)* or Consumption Dashboard export | Person × week | 6 months (weekly) / 28 days (daily) | ⚠️ Connector, not REST |
 | **Spending policies** | Same export | Policy | Current | ❌ |
 | **Copilot Studio** | Power Platform admin center → Licensing → Copilot Studio | Tenant × day; agent and user totals | ~3 months | ❌ CSV only |
 | **GitHub Copilot** | GitHub REST API, *or* Billing &amp; Licensing → AI usage report | Person × day | **24 months via API**; 31 days per web report | ✅ **Yes** |

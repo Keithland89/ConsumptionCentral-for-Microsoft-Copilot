@@ -182,6 +182,30 @@ Privacy Levels*: it works in Desktop and then fails on scheduled refresh in the 
 
 ---
 
+## Two Viva export routes
+
+**A custom query is the better one.** In Viva Insights - Analysis - create an analysis, choose the
+Copilot credit metrics, and set it to auto-refresh. It gives you:
+
+- **auto-refresh**, so the export keeps itself current
+- **real UPNs and EntraId**, even with identification enabled
+- **org attributes of your choosing**, carried alongside the credits - which means no separate
+  directory export is needed at all
+
+The Consumption Dashboard export still works and needs no change. Its files are named differently
+and both sets of names are recognised, so nothing has to be renamed either way:
+
+| | Custom query | Consumption Dashboard |
+|---|---|---|
+| Metrics | PersonM365CreditsMetrics.csv | PersonServiceCreditsMetrics.csv |
+| Policies | M365SpendingPolicyMetaData.csv | SpendingPolicyMetadata.csv |
+| People | PeopleMetaData.csv | PeopleMetaData.csv |
+
+Unzip whichever you have into your data folder. See
+[docs/ORG-DATA.md](../docs/ORG-DATA.md#where-org-data-comes-from) for how org attributes are picked up.
+
+---
+
 ## What's in this folder
 
 ```
