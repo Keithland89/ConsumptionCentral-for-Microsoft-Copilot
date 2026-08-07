@@ -139,7 +139,7 @@ A CreditLens variant with the connector in place exists at `CreditLens-VivaDirec
 |---|---|
 | `StudioTenantCsvPath`, `StudioAgentCsvPath`, `StudioUserCsvPath` | you have Copilot Studio and want its 4 pages |
 | `GitHubUsageCsvPath`, `GitHubUserMapCsvPath` | you have GitHub Copilot and want its 4 pages |
-| `EntraCsvPath` | your Viva query has no org attributes — see [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
+| `EntraCsvPath` | **fallback only** — Viva's own org attributes are used first; supply this only if your query carries none. See [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
 | `VivaExportName` | you're using a Consumption Dashboard export, not a custom query — see below |
 | the rate parameters | your agreement differs from the published $0.01 per credit |
 
@@ -177,32 +177,52 @@ Four CSV parameters used to sit here and all were wrong to have:
   roster. Every page then reads zero credits against a full set of seat limits, which looks like a
   broken measure rather than a mismatched file.
 
-### Why an org file is here
+### Where org data comes from
 
-**The Consumption Dashboard export does not carry org attributes. You supply them.**
+**Viva first. The Entra file is a fallback.**
 
-Measured against a live identified export — four table names tried, two answered:
+Viva publishes org attributes on a **people table**, keyed by `PeopleHistoricalId`, which the model
+joins to the usage rows for you. Whatever it carries is used automatically. `EntraCsvPath` is read
+**only** when Viva carries nothing usable, and ignored entirely when it does.
+
+So try it blank first. Load the report, open **Group By**, and see what's offered.
+
+**Measured against two live exports:**
+
+| Export | `PeopleMetaData` columns |
+|---|---|
+| De-identified | `PeopleHistoricalId`, `IsCopilotLicensed`, `Domain`, **`Organization`**, **`PopulationType`**, `StandardTimeZone`, `TimeZone` |
+| Custom query *(as built)* | `PeopleHistoricalId`, `IsCopilotLicensed` — nothing else |
+
+The custom query returns only what the analyst selected. If your Group By list is thin, the better
+fix is usually to **add org attributes to the query in Viva Insights** rather than to supply a file.
+
+A column that is present but blank for everybody is treated as absent — it would otherwise offer a
+Group By entry that yields a single empty bucket. `IsCopilotLicensed` and the two time zone columns
+are dropped as non-organisational.
+
+<details>
+<summary>Connector table names — what answers and what doesn't</summary>
+
+Measured against a live identified export:
 
 | Table | Result |
 |---|---|
-| `…Data_UserAIConsumptionActivity` | ✅ `UserPrincipalName`, `EntraId`, `ServiceId`, `ServiceName`, `SpendingPolicyId`, `MetricDate`, `Session count`, `Spending policy limit`, `Total Copilot Credits used`, `User limit` |
-| `…Data_AIConsumptionPlans` | ✅ `SpendingPolicyId`, `Name`, `PlanLimit`, `UserLimit`, `IncludedServices` |
+| `…Data_UserAIConsumptionActivity` | ✅ the metrics |
+| `…Data_AIConsumptionPlans` | ✅ policy names and limits |
 | `…Data_HR` | ❌ Bad request |
 | `…Data_PeopleHistorical` | ❌ Bad request |
 
-No department, job title, cost centre, country or manager anywhere. Viva gives you the identity —
-UPN and Entra ID — and expects you to join it to your own directory, which is where those attributes
-live and where they are richer than anything Viva holds.
+The people table is requested as `PeopleMetaData`, then `Data_PeopleMetaData`, then
+`<export>Data_People` — first one to answer wins, and none answering falls back to the Entra file.
 
-So `EntraCsvPath` is the **only** route to department grouping. It is optional in the sense that the
-report works without it: every credit and cost figure is correct, the trend and forecast are correct,
-and Group By simply falls back to usage intensity. It is not optional if you want to answer "which
-department is spending this".
+**These names are inferred from the CSV export, not yet confirmed against the live connector.** If
+none of them answer you get the Entra fallback, which is the pre-existing behaviour — so the failure
+mode is "no worse than before" rather than a broken refresh.
 
-> **A Microsoft template downloaded on 31 July for the de-identified export declared an `HR` table
-> with `Organization` and `FunctionType`.** We could not confirm that against a live de-identified
-> query — the tenant we tested had an identified one — and the export shape appears to have moved
-> since. Treat it as unverified: **plan on supplying org data yourself either way.**
+</details>
+
+Full detail: **[docs/ORG-DATA.md](../docs/ORG-DATA.md)**.
 
 > **If Group By is empty, check the UPNs match.** A directory export for a different tenant matches
 > nobody and fills the department table with people who have no credits. That is a mismatched file,

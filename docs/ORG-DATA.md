@@ -42,9 +42,14 @@ picks which ones come out, and they survive identification. Where that is what y
 uses them and no directory export is needed. They also always match the people in the metrics,
 because they came out of the same query.
 
-A **Consumption Dashboard** export carries none, so a directory export is the only route.
+A **Consumption Dashboard** export carries some too — a live de-identified export returned
+`Organization`, `Domain` and `PopulationType` on `PeopleMetaData`, keyed by `PeopleHistoricalId`.
+Fewer attributes than a well-built custom query, but not nothing.
 
-**Order of preference**, checked automatically:
+Supply a directory export when neither carries what you need.
+
+**All three paths — Local CSV, Fabric and Viva Direct — follow the same order of preference**,
+checked automatically:
 
 | | Source | Keyed by |
 |---|---|---|
@@ -54,6 +59,10 @@ A **Consumption Dashboard** export carries none, so a directory export is the on
 
 Viva wins when present. A file that travelled with the metrics beats one that might describe a
 different set of people.
+
+A column that exists but is blank for everybody counts as absent — it would otherwise put an entry
+in Group By that yields one empty bucket. Non-organisational columns (`IsCopilotLicensed`, the time
+zone pair) are dropped rather than offered.
 
 ---
 
