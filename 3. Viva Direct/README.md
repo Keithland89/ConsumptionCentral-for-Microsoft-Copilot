@@ -194,8 +194,12 @@ So try it blank first. Load the report, open **Group By**, and see what's offere
 | De-identified | `PeopleHistoricalId`, `IsCopilotLicensed`, `Domain`, **`Organization`**, **`PopulationType`**, `StandardTimeZone`, `TimeZone` |
 | Custom query *(as built)* | `PeopleHistoricalId`, `IsCopilotLicensed` — nothing else |
 
-The custom query returns only what the analyst selected. If your Group By list is thin, the better
-fix is usually to **add org attributes to the query in Viva Insights** rather than to supply a file.
+> ### If Group By is empty, add org attributes to your Viva query
+>
+> **This is the fix, not the Entra file.** A custom query returns only what the analyst selected. Go
+> back into the query in Viva Insights, add Department / Job title / Manager / Function to the
+> output, re-run. They arrive as extra columns on the metrics rows and the model picks them up
+> automatically — no file, no parameter, no reload of anything but the data.
 
 A column that is present but blank for everybody is treated as absent — it would otherwise offer a
 Group By entry that yields a single empty bucket. `IsCopilotLicensed` and the two time zone columns
@@ -204,7 +208,16 @@ are dropped as non-organisational.
 <details>
 <summary>Connector table names — what answers and what doesn't</summary>
 
-Measured against a live identified export:
+**A custom query exposes exactly ONE table through the connector.** Probed live
+against a real query with fifteen candidate names — `PeopleMetaData`, `Data_PeopleMetaData`, `People`,
+`HR`, `MetricOutput`, `PersonM365CreditsMetrics` and nine others. **Every one failed.** Only omitting
+`TableName` works.
+
+So the separate `PeopleMetaData` table you see in the CSV export is **not reachable through the
+connector** for a custom query. Org attributes selected in a custom query arrive as **extra columns
+on the metrics rows** instead, which is where the model now looks for them.
+
+A Consumption Dashboard export is different — it is genuinely multi-table:
 
 | Table | Result |
 |---|---|
@@ -213,12 +226,8 @@ Measured against a live identified export:
 | `…Data_HR` | ❌ Bad request |
 | `…Data_PeopleHistorical` | ❌ Bad request |
 
-The people table is requested as `PeopleMetaData`, then `Data_PeopleMetaData`, then
-`<export>Data_People` — first one to answer wins, and none answering falls back to the Entra file.
-
-**These names are inferred from the CSV export, not yet confirmed against the live connector.** If
-none of them answer you get the Entra fallback, which is the pre-existing behaviour — so the failure
-mode is "no worse than before" rather than a broken refresh.
+The model still tries for a people table by name, which costs nothing when it fails and covers the
+export case. If nothing answers it falls through to the metrics columns and then the Entra file.
 
 </details>
 
