@@ -46,10 +46,10 @@ A **Consumption Dashboard** export carries some too — a live de-identified exp
 `Organization`, `Domain` and `PopulationType` on `PeopleMetaData`, keyed by `PeopleHistoricalId`.
 Fewer attributes than a well-built custom query, but not nothing.
 
-> **Via the Viva Direct connector, a custom query exposes only ONE table.** Fifteen candidate table
-> names were probed live and all failed; only omitting `TableName` works. So org attributes selected
-> in a custom query arrive as **extra columns on the metrics rows**, not as a separate people table.
-> That is tier 1 below, and it is the tier that matters for the connector path.
+> **Via the Viva Direct connector the people table is called `PeopleHistorical` (or `HR`) — not
+> `PeopleMetaData`.** That last name is what the CSV export uses and it does **not** work against the
+> connector; nor does any `Data_` prefixed variant. Verified live. The join key is
+> `PeopleHistoricalId`, which the metrics rows also carry.
 
 Supply a directory export when neither carries what you need.
 

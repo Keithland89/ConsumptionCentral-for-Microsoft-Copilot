@@ -196,40 +196,50 @@ So try it blank first. Load the report, open **Group By**, and see what's offere
 
 > ### If Group By is empty, add org attributes to your Viva query
 >
-> **This is the fix, not the Entra file.** A custom query returns only what the analyst selected. Go
-> back into the query in Viva Insights, add Department / Job title / Manager / Function to the
-> output, re-run. They arrive as extra columns on the metrics rows and the model picks them up
-> automatically — no file, no parameter, no reload of anything but the data.
+> **This is usually the fix, not the Entra file.** A custom query returns only what the analyst
+> selected under *"Select spending policy and employee attributes to include in the query"*. Add
+> Department / Job title / Manager / Function there and re-run — they arrive on the people table and
+> the model picks them up automatically. No file, no parameter.
 
 A column that is present but blank for everybody is treated as absent — it would otherwise offer a
-Group By entry that yields a single empty bucket. `IsCopilotLicensed` and the two time zone columns
-are dropped as non-organisational.
+Group By entry that yields a single empty bucket. In a live test `Organization` was blank while
+`Domain` and `PopulationType` were populated, so only the latter two were offered.
+`IsCopilotLicensed` and the two time zone columns are dropped as non-organisational.
 
 <details>
 <summary>Connector table names — what answers and what doesn't</summary>
 
-**A custom query exposes exactly ONE table through the connector.** Probed live
-against a real query with fifteen candidate names — `PeopleMetaData`, `Data_PeopleMetaData`, `People`,
-`HR`, `MetricOutput`, `PersonM365CreditsMetrics` and nine others. **Every one failed.** Only omitting
-`TableName` works.
+**Verified live against a custom query.** The names are not the ones the CSV export uses:
 
-So the separate `PeopleMetaData` table you see in the CSV export is **not reachable through the
-connector** for a custom query. Org attributes selected in a custom query arrive as **extra columns
-on the metrics rows** instead, which is where the model now looks for them.
-
-A Consumption Dashboard export is different — it is genuinely multi-table:
-
-| Table | Result |
+| `TableName` | Result |
 |---|---|
-| `…Data_UserAIConsumptionActivity` | ✅ the metrics |
-| `…Data_AIConsumptionPlans` | ✅ policy names and limits |
-| `…Data_HR` | ❌ Bad request |
-| `…Data_PeopleHistorical` | ❌ Bad request |
+| *(omitted)* | ✅ the metrics — `UserPrincipalName`, `EntraId`, `ServiceId`, `ServiceName`, `SpendingPolicyId`, `MetricDate`, session/credit columns, `PeopleHistoricalId` |
+| **`PeopleHistorical`** | ✅ **the org attributes** — `PeopleHistoricalId`, `IsCopilotLicensed`, `Domain`, `Organization`, `PopulationType`, `StandardTimeZone`, `TimeZone` |
+| **`HR`** | ✅ same table, same columns |
+| `PeopleMetaData` | ❌ — *this is the name the CSV export uses, and it does not work* |
+| `Data_PeopleMetaData`, `Data_People`, `OrganizationalData` | ❌ |
 
-The model still tries for a people table by name, which costs nothing when it fails and covers the
-export case. If nothing answers it falls through to the metrics columns and then the Entra file.
+The model tries `PeopleHistorical`, then `HR`, then `PeopleMetaData`, and falls through to the Entra
+file if none answer.
+
+**The join is `PeopleHistoricalId`**, which the metrics rows also carry — that is what connects a
+person's org attributes to their credit usage.
 
 </details>
+
+### Org filtering covers all three products
+
+Once org data is present, the **Group By** slicer filters Cowork, Copilot Studio *and* GitHub
+Copilot together — the relationships already exist and were verified live:
+
+| | Joined on |
+|---|---|
+| Cowork | `CoworkBilling` / `CreditsWeekly` → `Org` via UPN |
+| Copilot Studio | `Credit Consumption (User)` → `Org` via `User_Email` |
+| GitHub Copilot | `GitHub User` → `Org` via UPN, then → `GitHub Usage` |
+
+Studio's **per-agent** and **tenant** pages don't filter by org — they have no person column, so
+there is nothing to join. That is inherent to those exports, not a gap in the model.
 
 Full detail: **[docs/ORG-DATA.md](../docs/ORG-DATA.md)**.
 
