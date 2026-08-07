@@ -37,10 +37,32 @@ Not supported through Microsoft support channels — please open an issue in thi
 
 ---
 
+## ✅ Bring whichever products you have
+
+CreditLens covers three — **Cowork/Work IQ**, **Copilot Studio** and **GitHub Copilot**.
+
+> ### **None of them is required. One is enough.**
+>
+> Load one product and its four pages work. The rest come up empty and nothing breaks.
+
+| I have… | I get |
+|---|---|
+| **Cowork only** | Cowork consumption, cost, optimisation, forecast |
+| **Studio only** | The same four, for Studio |
+| **GitHub only** | The same four, for GitHub |
+| **Any two, or all three** | Those, plus the combined overview |
+
+*Tested by loading each combination: every product's figures are unchanged by the others' absence.*
+
+**Org attributes are optional too.** Without them, Group By falls back to usage intensity — every
+credit and cost figure is still correct, you just cannot break it down by department.
+
+---
+
 ## 🚀 Pick a deployment path
 
-The dashboard ships as **three folders**. They produce the same 14 pages and the same measures — they
-differ only in *how the data gets in and how it refreshes*.
+Three folders. **Same 14 pages, same measures** — they differ only in how the data gets in and how it
+refreshes.
 
 | Path | Pick this when… | What you need |
 |---|---|---|

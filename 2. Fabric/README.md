@@ -3,26 +3,41 @@
 Land the exports in a Fabric Lakehouse, read them through the SQL analytics endpoint, refresh on a
 schedule.
 
-**Why bother?** One reason above all others: **the Viva Insights consumption export only reaches back
-6 months.** Every week you don't capture is gone permanently. This path accumulates history in a
-Delta table that outlives the export window — so a year from now you have a year of trend, not the
-same rolling six months.
+**Why bother?** The Viva Insights consumption export only reaches back **6 months**. Every week you
+don't capture is gone permanently. This path accumulates history in a Delta table that outlives the
+export window — a year from now you have a year of trend, not the same rolling six months.
 
-You also get: scheduled refresh, sub-second pages on large tenants, and a single governed copy of the
-data rather than CSVs on someone's laptop.
-
-> **You may not need to download anything.** Viva Insights ships a **Dataflow Gen2** connector that
-> writes query results straight into a Lakehouse on a schedule —
-> [export-query-data-microsoft-fabric][vivafabric]. Set the query to auto-refresh in Viva Insights,
-> schedule the Dataflow for **Tuesday ~8am PST** (after Viva's weekend refresh), and the Viva half of
-> this pipeline runs itself. See [Automating the Viva load](#automating-the-viva-load).
->
-> Earlier versions of this page said there was no scheduled export. That was wrong.
-
-[vivafabric]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
+You also get scheduled refresh, sub-second pages on large tenants, and one governed copy of the data
+rather than CSVs on someone's laptop.
 
 **You need** Fabric capacity, Premium, or PPU. If you only have Power BI Pro, use
 **[1. Local CSV](../1.%20Local%20CSV/)**.
+
+---
+
+## Bring whichever products you have
+
+> ### **Every table is optional. One product is enough.**
+>
+> Load Cowork only and its four pages work. Studio only, or GitHub only — same. A missing table is a
+> supported state, not an error: those pages come up empty and nothing else is affected.
+
+*Verified by deleting tables from a live Lakehouse and refreshing — each product's figures were
+unchanged by the others' absence.*
+
+---
+
+## The short version
+
+1. Create a Lakehouse
+2. Land whatever data you have — **one product is enough**
+3. Open `CreditLens - Fabric.pbit`, paste two values, done
+
+**The Viva half can run itself.** Viva Insights ships a **Dataflow Gen2** connector that writes query
+results straight into a Lakehouse on a schedule — no download, no notebook. See
+[Automating the Viva load](#automating-the-viva-load).
+
+The rest of this page is the detail behind those three steps.
 
 ---
 
@@ -36,6 +51,8 @@ seed_sample_data.py        load the sample dataset into a Lakehouse, for a quick
 README.md                  this file
 CreditLens - Fabric.pbit   the template
 ```
+
+[vivafabric]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
 
 The model has been built and tested end to end against a live Lakehouse — all nine tables, plus two
 partial-product subsets. See [Table contracts](#table-contracts) for the figures.
@@ -113,6 +130,9 @@ grant is refused, skip it and set the rate in the template by hand.
 ### 4. Drop in your first exports
 
 Upload each export into its `landing/` subfolder and run the matching notebook.
+
+> **Only run the notebooks for products you actually have.** Skipping one is fine — its pages come up
+> empty and everything else works. Don't wait until you have all three.
 
 > **Or try it with sample data first.** [`seed_sample_data.py`](seed_sample_data.py) writes all nine
 > tables straight into your Lakehouse from the synthetic dataset in

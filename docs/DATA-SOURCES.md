@@ -2,6 +2,9 @@
 
 Everything CreditLens reads, where it comes from, and what it looks like.
 
+> **You don't need all of it.** Every source below is optional. Bring one product and its pages
+> work; the rest come up empty. Skip to the section for whatever you have.
+
 Each section gives the click-path, the role required, the file it produces and its columns. Where
 Microsoft or GitHub has published a schema, it is cited. Where they have not, the columns are the
 ones observed in a real export and are marked as such — check yours matches before you trust it.

@@ -12,15 +12,31 @@ anything.
 
 ## Before you start
 
-You need at least the **Cowork export**. Everything else is optional — the pages for a product you
-have no data for simply come up empty, and the rest still works.
+**Bring whichever products you have. One is enough.**
 
-| | Role needed | Takes |
+CreditLens covers three: Cowork/Work IQ, Copilot Studio and GitHub Copilot. **None of them is
+required.** Load one and its four pages work; the other ten come up empty and nothing breaks. Load
+all three and you get the combined view.
+
+| I have… | I get |
+|---|---|
+| Cowork only | Cowork consumption, cost, optimisation, forecast |
+| Studio only | The same four, for Studio |
+| GitHub only | The same four, for GitHub |
+| Any two, or all three | Those, plus the combined overview |
+
+*Verified by loading each combination and checking every product's figures are unchanged by the
+others' absence.*
+
+**Org attributes are optional too.** Without them, Group By falls back to usage intensity — every
+credit and cost figure is still correct, you just cannot break it down by department.
+
+| Export | Role needed | Takes |
 |---|---|---|
 | Cowork / Work IQ credits | Global Admin *or* Viva Insights Analyst | 2 min |
 | Copilot Studio credits | Power Platform Admin | 2 min |
 | GitHub Copilot AI usage | Enterprise owner or billing manager | 2 min + email wait |
-| Entra org attributes | Any user | 3 min |
+| Org attributes | Any user | 3 min |
 
 Full click-paths, roles and caveats: **[docs/DATA-SOURCES.md](../docs/DATA-SOURCES.md)**.
 
@@ -35,71 +51,93 @@ normal file path, so a synced folder gives you a shared location without any ext
 C:\CreditLens\Data\
 ```
 
-## Step 2 — Get the exports
+## Step 2 — Get whichever exports you have
 
-### Cowork / Work IQ — required
+**Skip any product you don't use.** Each section stands alone.
 
-1. Go to <https://analysis.insights.viva.office.com>
-2. Open the **Consumption Dashboard**
-3. Export, choosing **by week** (6 months of history, versus 28 days for daily)
+### Cowork / Work IQ
+
+**Best route — a custom query.** It auto-refreshes, and it can carry org attributes so you may not
+need a separate directory export at all.
+
+1. <https://analysis.insights.cloud.microsoft> → **Analysis** → create an analysis
+2. Choose the **Copilot credit** metrics, add any org attributes you want, turn on **Auto-refresh**
+3. **Analysis results** → your query → download as CSV
 4. Unzip into your data folder
 
-You get `PersonServiceCreditsMetrics.csv` and `SpendingPolicyMetadata.csv`, and — if your tenant
-exports de-identified — also `PeopleMetaData.csv` and `PersonPolicyMap.csv`.
+**Or the Consumption Dashboard export**, if you'd rather not build a query: open the
+**Consumption Dashboard**, export **by week** (6 months of history, versus 28 days for daily), unzip
+into the same folder.
 
-**Both variants work.** CreditLens detects which one you have and adapts. See
-[Identified vs de-identified](../docs/DATA-SOURCES.md#identified-vs-de-identified) for what changes.
+Both work, and both are found by name — nothing needs renaming. Identified and de-identified exports
+both work too; the template detects which you have. See
+[Identified vs de-identified](../docs/DATA-SOURCES.md#identified-vs-de-identified).
 
-### Copilot Studio — optional
+### Copilot Studio
 
 Power Platform admin center → **Licensing** → **Copilot Studio**. Export the tenant, per-agent and
 per-user views into the same folder as `StudioTenantDaily.csv`, `StudioPerAgent.csv` and
 `StudioPerUser.csv`.
 
 > The export button is not documented by Microsoft — look for **Download** or **Export** on each tab.
-> If there isn't one, skip it; the Studio pages stay empty and nothing else is affected.
+> If there isn't one, skip it. The Studio pages stay empty and nothing else is affected.
 
-### GitHub Copilot — optional
+### GitHub Copilot
 
 1. GitHub → your enterprise → **Billing &amp; Licensing** → Usage → **AI usage**
 2. **Get usage report**, pick a range of up to **31 days**, **Email me the report**
 3. Save the CSV as `GitHubAiUsage.csv`
 
-You also need a seat list as `GitHubUserMap.csv`, with columns:
+You also need a seat list as `GitHubUserMap.csv`:
 
 ```
 username,userPrincipalName,displayName,plan,included_credits
 ```
 
-`plan` must be `Copilot Business` or `Copilot Enterprise` — the seat-cost measure keys on it.
-`userPrincipalName` is what links a GitHub account to the Entra org file, so department breakdowns
-depend on it being right.
+`plan` must read `Copilot Business` or `Copilot Enterprise` — the seat-cost measure keys on it.
+`userPrincipalName` is what links a GitHub account to your directory, so department breakdowns depend
+on it.
 
-### Entra org attributes — optional but recommended
+### Org attributes
 
-Entra admin center → **Users** → **All users** → **Download users**. Save as `entra_org.csv`.
+**You may already have these.** If your Viva custom query includes department or similar, CreditLens
+uses them and you can skip this entirely.
 
-Without it, everything works but you lose department, cost-centre and business-unit breakdowns —
-which is most of the chargeback story. `manager`, `costCenter`, `jobFamily` and `businessUnit` need
-Graph rather than the classic download; see
-[the Entra section](../docs/DATA-SOURCES.md#4-org-attributes--microsoft-entra-optional) for a
-ready-to-run PowerShell snippet.
+Otherwise: Entra admin center → **Users** → **All users** → **Download users**, saved as
+`entra_org.csv`. For `manager`, `costCenter`, `jobFamily` and `businessUnit` you need Graph rather
+than the classic download — **[docs/ORG-DATA.md](../docs/ORG-DATA.md)** has ready-to-run scripts and
+how to schedule them.
+
+Without any org data, Group By falls back to usage intensity. Every credit and cost figure is still
+correct.
 
 ## Step 3 — Open the template
 
-Double-click **`CreditLens - Local CSV.pbit`** *(see the note at the foot of this page — it needs
-building first)*. Power BI Desktop prompts for parameters before it
-loads anything. **There are seven, and only the first matters to get started.**
+Double-click **`CreditLens - Local CSV.pbit`**. Power BI prompts for parameters before loading
+anything.
+
+**Only the first one matters to get started. Leave the rest alone.**
 
 | Parameter | What to put |
 |---|---|
-| **`DataFolder`** | The folder from step 1. That's it — the files are found by name. |
-| `CreditRate` | Leave at `0.01` unless your agreement differs |
-| `PrepaidCreditRate` | Leave at `0.008` unless you hold prepaid capacity |
-| `PrepaidCreditBalance` | Your prepaid Cowork credits, or `0` |
-| `GitHubBusinessSeatPrice` | `19`, or your discounted price |
-| `GitHubEnterpriseSeatPrice` | `39`, or your discounted price |
-| `BillingPeriodWeeks` | `4` unless your billing month differs |
+| **`DataFolder`** | The folder from step 1. That's it. |
+
+<details>
+<summary>The other six — commercial terms, all with sensible defaults</summary>
+
+| Parameter | Default | Change it when |
+|---|---|---|
+| `CreditRate` | `0.01` | your agreement prices credits differently |
+| `PrepaidCreditRate` | `0.008` | you hold prepaid capacity |
+| `PrepaidCreditBalance` | `0` | you hold prepaid capacity |
+| `GitHubBusinessSeatPrice` | `19` | your GitHub seats are discounted |
+| `GitHubEnterpriseSeatPrice` | `39` | your GitHub seats are discounted |
+| `BillingPeriodWeeks` | `4` | your billing month isn't four weeks |
+
+Every one has an ⓘ tooltip in the prompt explaining where to find the real value.
+Full detail: **[docs/COMMERCIAL-TERMS.md](../docs/COMMERCIAL-TERMS.md)**.
+
+</details>
 
 **You do not point at individual files.** The template searches the folder — subfolders included —
 and matches each export by name, so `PersonServiceCreditsMetrics.csv`,

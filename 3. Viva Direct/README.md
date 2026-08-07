@@ -7,6 +7,38 @@ scheduled refresh.
 
 ---
 
+## Bring whichever products you have
+
+> ### **Only two boxes are required. One product is enough.**
+>
+> This path is built for Cowork, so `VivaPartitionId` and `VivaQueryId` are the two you must fill.
+> **Everything else in the parameter prompt is optional — leave it blank.**
+>
+> Copilot Studio and GitHub Copilot are bonus pages. Add them if you have them; skip them if you
+> don't. Their pages come up empty and nothing else changes.
+
+The prompt is long. Ignore most of it:
+
+| Fill in | Leave blank |
+|---|---|
+| `VivaPartitionId` | everything starting `Studio…` |
+| `VivaQueryId` | everything starting `GitHub…` |
+| | `EntraCsvPath`, `VivaExportName`, and all the rate parameters |
+
+*The rates default to the published $0.01 per credit — correct for most agreements.*
+
+---
+
+## The short version
+
+1. Viva Insights → **Analysis** → build a query with the Copilot credit metrics → **Auto-refresh on**
+2. **Analysis results** → your query → the **Link** icon → copy the two identifiers
+3. Open `CreditLens - Viva Direct.pbit`, paste them into the two Viva boxes, leave the rest blank
+
+The rest of this page is the detail behind those three steps.
+
+---
+
 ## Status: working
 
 Verified end to end on a live tenant: the connector returned real UPNs and credit figures matching
@@ -92,14 +124,26 @@ A CreditLens variant with the connector in place exists at `CreditLens-VivaDirec
 
 ### What it asks you for
 
-**Two identifiers — the same two the dialog gives you.**
+**Two identifiers. That's it.** The prompt lists 21 boxes; 19 of them are optional.
 
 | Parameter | | |
 |---|---|---|
 | `VivaPartitionId` | **required** | Partition identifier, from **Analysis results → Link** |
 | `VivaQueryId` | **required** | Query identifier, from the same place |
-| `EntraCsvPath` | *only if needed* | a directory export — see [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
-| `VivaExportName` | *leave blank* | only for a Consumption Dashboard export — see below |
+| *everything else* | *leave blank* | Studio, GitHub, org file, rates — all optional |
+
+<details>
+<summary>The optional ones, if you want them</summary>
+
+| Parameter | When |
+|---|---|
+| `StudioTenantCsvPath`, `StudioAgentCsvPath`, `StudioUserCsvPath` | you have Copilot Studio and want its 4 pages |
+| `GitHubUsageCsvPath`, `GitHubUserMapCsvPath` | you have GitHub Copilot and want its 4 pages |
+| `EntraCsvPath` | your Viva query has no org attributes — see [docs/ORG-DATA.md](../docs/ORG-DATA.md) |
+| `VivaExportName` | you're using a Consumption Dashboard export, not a custom query — see below |
+| the rate parameters | your agreement differs from the published $0.01 per credit |
+
+</details>
 
 ### Use a custom query
 
