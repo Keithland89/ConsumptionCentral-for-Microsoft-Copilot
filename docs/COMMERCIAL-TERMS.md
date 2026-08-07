@@ -1,6 +1,6 @@
 # Commercial terms — where the numbers come from
 
-CreditLens asks for seven values. One is your data folder; the other six are commercial terms.
+Consumption Central asks for seven values. One is your data folder; the other six are commercial terms.
 
 **None of the exports carry pricing.** Viva Insights, PPAC and GitHub all report *consumption* —
 credits used, seats held — and none of them says what a credit costs you. That is why the template

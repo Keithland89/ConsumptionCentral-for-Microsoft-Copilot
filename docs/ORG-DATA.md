@@ -9,7 +9,7 @@ from your directory, and you supply it.
 
 > **One exception, and it is the good one.** A Viva Insights **custom query** can carry org
 > attributes with the credit metrics, even with identification enabled. Where you have that,
-> CreditLens uses it and you supply nothing. See [Where org data comes from](#where-org-data-comes-from).
+> Consumption Central uses it and you supply nothing. See [Where org data comes from](#where-org-data-comes-from).
 
 That is not a gap in the template. Your directory holds richer and more current org data than any
 consumption export would, and it is the same directory all three products can be joined back to.
@@ -38,7 +38,7 @@ org_attributes ──┬── user_principal_name ──── Cowork / Work IQ
 **Best case: it comes with your Viva query and you supply nothing.**
 
 A Viva Insights **custom query** can carry org attributes alongside the credit metrics — the analyst
-picks which ones come out, and they survive identification. Where that is what you have, CreditLens
+picks which ones come out, and they survive identification. Where that is what you have, Consumption Central
 uses them and no directory export is needed. They also always match the people in the metrics,
 because they came out of the same query.
 
@@ -83,7 +83,7 @@ All three produce the same shape. Pick by how you deploy.
 
 > These live in **[AI-in-One-Dashboard][ai1]** and **[ValueLens][vl]**. They are linked rather than
 > copied, so you get their fixes rather than a fork that quietly ages. Both are Keith's or
-> Microsoft's own; neither is CreditLens-specific.
+> Microsoft's own; neither is Consumption Central-specific.
 
 ### A and B — PowerShell to CSV
 
@@ -100,9 +100,9 @@ one, but a quarter-old org chart will misattribute anyone who moved.
 
 Writes a Delta table directly, so nothing lands on anyone's laptop. It also builds a **flattened
 manager hierarchy** — `Level0_Name`…`LevelN_Name`, `OrgLevel`, `HierarchyPath`, `IsManager`,
-`DirectReports` — which CreditLens does not use today but is there if you want to extend it.
+`DirectReports` — which Consumption Central does not use today but is there if you want to extend it.
 
-It writes to `copilot_org_data`. CreditLens reads `org_attributes`. Either rename the output table or
+It writes to `copilot_org_data`. Consumption Central reads `org_attributes`. Either rename the output table or
 add a one-line view:
 
 ```sql
@@ -115,10 +115,10 @@ The column *names* need no mapping — see below.
 
 ## Columns
 
-CreditLens matches on a **normalised** name: case, spaces, underscores and hyphens are ignored. So
+Consumption Central matches on a **normalised** name: case, spaces, underscores and hyphens are ignored. So
 `user_principal_name`, `userPrincipalName` and `User Principal Name` are the same column.
 
-| CreditLens | Also accepts |
+| Consumption Central | Also accepts |
 |---|---|
 | `UserPrincipalName` | `upn`, `email`, `mail`, `PersonId`, `PersonId_Normalized` |
 | `DisplayName` | `name`, `fullName`, `preferredName` |

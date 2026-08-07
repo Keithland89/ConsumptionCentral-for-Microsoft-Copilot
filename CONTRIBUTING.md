@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in CreditLens.
+Thank you for your interest in Consumption Central.
 
 ## Contributor License Agreement
 
@@ -20,7 +20,7 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 
 ## What's most useful
 
-**Corrections to the click-paths.** Several of the exports CreditLens reads are in preview and their
+**Corrections to the click-paths.** Several of the exports Consumption Central reads are in preview and their
 portals move. If a path in [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md) no longer matches what you
 see, that is a genuinely valuable issue — please include what you saw instead.
 
@@ -60,7 +60,7 @@ If you have changed model or report files, please confirm:
 - [ ] Every page renders — a visual can silently vanish without any file being invalid
 - [ ] No new hardcoded numbers, dates, or interpretations in any card, title or measure
 
-That last point matters more than it sounds. CreditLens is a **template**: every customer's data is
+That last point matters more than it sounds. Consumption Central is a **template**: every customer's data is
 different, so a headline that says "usage grew 19.8% over the last 13 weeks" is a lie for the next
 reader unless both numbers are computed. If you add narrative, derive it.
 

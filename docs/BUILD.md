@@ -6,14 +6,14 @@ Desktop has no command-line template export, so it cannot be scripted.
 ## Source project
 
 ```
-CreditLens-GHCP\CreditLens - Cowork WorkIQ Studio GHCP.pbip     the CSV variant
-CreditLens-Fabric\CreditLens - Cowork WorkIQ Studio GHCP.pbip   the Lakehouse variant
+ConsumptionCentral-GHCP\Consumption Central - Cowork WorkIQ Studio GHCP.pbip     the CSV variant
+ConsumptionCentral-Fabric\Consumption Central - Cowork WorkIQ Studio GHCP.pbip   the Lakehouse variant
 ```
 
 27 tables, 284 measures, 14 pages. Identical model and report in both — only the partitions and the
 source parameters differ.
 
-## Producing `CreditLens - Local CSV.pbit`
+## Producing `Consumption Central - Local CSV.pbit`
 
 1. Open the `.pbip` in Power BI Desktop and let it refresh.
 2. **Reset the seven parameters to shipping defaults** — *Transform data → Manage parameters*. A
@@ -39,15 +39,15 @@ source parameters differ.
    > Point DataFolder at a folder holding your exports — the files are found by name, so nothing
    > needs renaming and anything you do not have is skipped. See the README for where each export
    > comes from.
-6. Save as `1. Local CSV\CreditLens - Local CSV.pbit`.
+6. Save as `1. Local CSV\Consumption Central - Local CSV.pbit`.
 
-## Producing `CreditLens - Fabric.pbit`
+## Producing `Consumption Central - Fabric.pbit`
 
 Same model, different source. **The swap is done** — it lives in its own project so both variants
 can be maintained side by side:
 
 ```
-CreditLens-Fabric\CreditLens - Cowork WorkIQ Studio GHCP.pbip
+ConsumptionCentral-Fabric\Consumption Central - Cowork WorkIQ Studio GHCP.pbip
 ```
 
 Every query reads `Sql.Database(FabricSQLEndpoint, LakehouseName)`; no CSV path remains. Verified:
@@ -69,10 +69,10 @@ What changed from the CSV project, if it ever needs redoing:
 
 To export the `.pbit`:
 
-1. Open `CreditLens-Fabric\...pbip`, confirm `FabricSQLEndpoint` and `LakehouseName` hold shipping
+1. Open `ConsumptionCentral-Fabric\...pbip`, confirm `FabricSQLEndpoint` and `LakehouseName` hold shipping
    placeholders (`your-endpoint.datawarehouse.fabric.microsoft.com`, `creditlens`).
 2. **File → Export → Power BI template**, same description as above but pointing at a Lakehouse.
-3. Save as `2. Fabric\CreditLens - Fabric.pbit`.
+3. Save as `2. Fabric\Consumption Central - Fabric.pbit`.
 
 > Desktop refuses to refresh without a real Lakehouse, and that is fine — a template export does not
 > need loaded data. If you *do* want to validate against real tables first, the sample CSVs in

@@ -14,7 +14,7 @@ anything.
 
 **Bring whichever products you have. One is enough.**
 
-CreditLens covers three: Cowork/Work IQ, Copilot Studio and GitHub Copilot. **None of them is
+Consumption Central covers three: Cowork/Work IQ, Copilot Studio and GitHub Copilot. **None of them is
 required.** Load one and its four pages work; the other ten come up empty and nothing breaks. Load
 all three and you get the combined view.
 
@@ -100,7 +100,7 @@ on it.
 
 ### Org attributes
 
-**You may already have these.** If your Viva custom query includes department or similar, CreditLens
+**You may already have these.** If your Viva custom query includes department or similar, Consumption Central
 uses them and you can skip this entirely.
 
 Otherwise: Entra admin center → **Users** → **All users** → **Download users**, saved as
@@ -113,7 +113,7 @@ correct.
 
 ## Step 3 — Open the template
 
-Double-click **`CreditLens - Local CSV.pbit`**. Power BI prompts for parameters before loading
+Double-click **`Consumption Central - Local CSV.pbit`**. Power BI prompts for parameters before loading
 anything.
 
 **Only the first one matters to get started. Leave the rest alone.**
@@ -247,7 +247,7 @@ Unzip whichever you have into your data folder. See
 ## What's in this folder
 
 ```
-CreditLens - Local CSV.pbit    the template
+Consumption Central - Local CSV.pbit    the template
 sample-data/                   a small synthetic dataset, if you want to see it working first
 README.md                      this file
 ```

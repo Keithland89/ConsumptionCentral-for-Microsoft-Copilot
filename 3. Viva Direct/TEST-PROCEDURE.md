@@ -70,7 +70,7 @@ refresh.
 `Focus_hours`, `Chats_sent`, `Collaboration_hours`…
 
 Collaboration metrics with **no credits, no spending policy, no service name** means the connector
-covers Analyst Workbench queries only and this path is a dead end for CreditLens. Use
+covers Analyst Workbench queries only and this path is a dead end for Consumption Central. Use
 **[2. Fabric](../2.%20Fabric/)** for automation, or **[1. Local CSV](../1.%20Local%20CSV/)** to get
 going today.
 
@@ -151,6 +151,6 @@ returns raw row-level data.
 > — [Viva Insights Power BI connector](https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/power-bi-connector),
 > checked 2026-04-25
 
-CreditLens shows per-person consumption deliberately — that is what a chargeback report is for — but
+Consumption Central shows per-person consumption deliberately — that is what a chargeback report is for — but
 check whether per-person reporting needs works-council consultation or similar where you operate
 before publishing it.

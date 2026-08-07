@@ -31,7 +31,7 @@ unchanged by the others' absence.*
 
 1. Create a Lakehouse
 2. Land whatever data you have — **one product is enough**
-3. Open `CreditLens - Fabric.pbit`, paste two values, done
+3. Open `Consumption Central - Fabric.pbit`, paste two values, done
 
 **The Viva half can run itself.** Viva Insights ships a **Dataflow Gen2** connector that writes query
 results straight into a Lakehouse on a schedule — no download, no notebook. See
@@ -49,7 +49,7 @@ flows/                     automating the landing step with Power Automate
 docs/DATA-DICTIONARY.md    every table and column, with merge keys and caveats
 seed_sample_data.py        load the sample dataset into a Lakehouse, for a quick try
 README.md                  this file
-CreditLens - Fabric.pbit   the template
+Consumption Central - Fabric.pbit   the template
 ```
 
 [vivafabric]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
@@ -68,7 +68,7 @@ GitHub  ────────────── REST API, scheduled ───
                                                         SQL analytics endpoint
                                                                   │
                                                                   ▼
-                                                    CreditLens - Fabric.pbit
+                                                    Consumption Central - Fabric.pbit
 ```
 
 The exports still have to be *fetched* — with one exception. **GitHub can be pulled straight from its
@@ -146,7 +146,7 @@ Upload each export into its `landing/` subfolder and run the matching notebook.
 > ```
 >
 > Both GUIDs are in the Fabric portal URL with the Lakehouse open. It overwrites only the nine
-> CreditLens tables and refuses to touch anything else, which matters because Lakehouses are usually
+> Consumption Central tables and refuses to touch anything else, which matters because Lakehouses are usually
 > shared. Testing convenience only — for real data use the notebooks, which merge rather than
 > overwrite and so accumulate history.
 Click-paths for getting the exports: **[docs/DATA-SOURCES.md](../docs/DATA-SOURCES.md)**.
@@ -163,7 +163,7 @@ updated 2026-06-26.)*
 
 ### 6. Open the template
 
-Double-click **`CreditLens - Fabric.pbit`** and supply:
+Double-click **`Consumption Central - Fabric.pbit`** and supply:
 
 | Parameter | Value |
 |---|---|

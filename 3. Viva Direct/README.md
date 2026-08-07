@@ -3,7 +3,7 @@
 Connect straight to Viva Insights through the certified connector — no files, no notebooks, native
 scheduled refresh.
 
-**`CreditLens - Viva Direct.pbit`** is in this folder. Open it, paste two identifiers, done.
+**`Consumption Central - Viva Direct.pbit`** is in this folder. Open it, paste two identifiers, done.
 
 ---
 
@@ -33,7 +33,7 @@ The prompt is long. Ignore most of it:
 
 1. Viva Insights → **Analysis** → build a query with the Copilot credit metrics → **Auto-refresh on**
 2. **Analysis results** → your query → the **Link** icon → copy the two identifiers
-3. Open `CreditLens - Viva Direct.pbit`, paste them into the two Viva boxes, leave the rest blank
+3. Open `Consumption Central - Viva Direct.pbit`, paste them into the two Viva boxes, leave the rest blank
 
 The rest of this page is the detail behind those three steps.
 
@@ -56,7 +56,7 @@ the two identifiers.
 | `VivaExportName` | **leave blank** | must be set — see below |
 | Policy names | in-query column | separate table, read automatically |
 
-**A model wired for it exists** at `CreditLens-VivaDirect` — see [Already wired](#already-wired).
+**A model wired for it exists** at `ConsumptionCentral-VivaDirect` — see [Already wired](#already-wired).
 
 > **If you use the Consumption Dashboard export, `VivaExportName` must be set.**
 >
@@ -82,7 +82,7 @@ the two identifiers.
 Microsoft ships **its own Power BI template** from that same dialog. Download it first.
 
 It will cover Cowork consumption from the Consumption Dashboard, and it will do that with
-first-party support. CreditLens is a different proposition: three products in one report — Cowork,
+first-party support. Consumption Central is a different proposition: three products in one report — Cowork,
 Copilot Studio and GitHub Copilot — with cost, optimisation and forecast pages over all of them.
 
 If you only need Cowork, use Microsoft's. If you are trying to see the whole Copilot bill in one
@@ -94,7 +94,7 @@ place, that is what this is for.
 
 1. <https://analysis.insights.cloud.microsoft> → **Consumption Dashboard**
 2. The **download** icon, top right
-3. Choose **Export by week** *(weekly is what CreditLens is built on)*
+3. Choose **Export by week** *(weekly is what Consumption Central is built on)*
 4. **Connect data** → **Power BI** tab
 5. Copy **Partition identifier** and **Query identifier**
 
@@ -120,7 +120,7 @@ not row-level. Check them before clicking Load.
 
 ## Already wired
 
-A CreditLens variant with the connector in place exists at `CreditLens-VivaDirect`.
+A Consumption Central variant with the connector in place exists at `ConsumptionCentral-VivaDirect`.
 
 ### What it asks you for
 
@@ -291,7 +291,7 @@ result — so the tenant permission (Analyst role) is in place.
 
 The argument order is also fine. Your **query** identifier appears in the `reports/` position and
 your **partition** identifier in `scopes/`, which is what the service expects — so the M in
-`CreditLens-VivaDirect` is putting both GUIDs where they belong.
+`ConsumptionCentral-VivaDirect` is putting both GUIDs where they belong.
 
 That leaves three candidates, all beyond the connector:
 
@@ -338,7 +338,7 @@ returns row-level data and it is on you to aggregate appropriately before publis
 
 > *"The connector doesn't enforce privacy rules, including Minimum group size."* — [connector docs][d2]
 
-CreditLens shows per-person consumption deliberately — that is what a chargeback report is for — but
+Consumption Central shows per-person consumption deliberately — that is what a chargeback report is for — but
 check whether that needs works-council consultation where you operate.
 
 ---

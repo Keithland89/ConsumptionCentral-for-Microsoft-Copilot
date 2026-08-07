@@ -39,7 +39,7 @@ Also worth noting: **how far back does it go?** The file export gives five compl
 month-to-date. If the connector reaches further, that weakens the case for the Fabric path
 considerably.
 
-**A model is already wired for this** at `CreditLens-VivaDirect` — two parameters, `VivaPartitionId`
+**A model is already wired for this** at `ConsumptionCentral-VivaDirect` — two parameters, `VivaPartitionId`
 and `VivaQueryId`. Once access is sorted, paste and refresh.
 
 ---

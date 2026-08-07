@@ -1,6 +1,6 @@
 # Data dictionary
 
-The nine Delta tables CreditLens reads, and what each column means.
+The nine Delta tables Consumption Central reads, and what each column means.
 
 If you build your own pipeline instead of using the notebooks, match this and the template works
 unchanged. The tables are deliberately close to the source exports — renamed to `snake_case` and
@@ -64,7 +64,7 @@ pricing is unaffected, because the limits already travel inline on the metrics r
 ## `studio_tenant_daily`
 
 Copilot Studio consumption. One row per environment × billing plan × capacity type × day. **The only
-Studio table with a real date**, and so the only one CreditLens plots over time.
+Studio table with a real date**, and so the only one Consumption Central plots over time.
 
 | Column | Type | Notes |
 |---|---|---|
@@ -116,7 +116,7 @@ An agent appears once per feature per channel per environment, so all of those b
 > count in every total.
 
 > **Read these as cumulative, not incremental.** Two snapshots in the same month show growth to date,
-> not new consumption. CreditLens therefore treats them as period totals and never plots them on a
+> not new consumption. Consumption Central therefore treats them as period totals and never plots them on a
 > time axis — which is also why the Studio forecast extends a daily run rate rather than fitting a
 > curve.
 >
@@ -146,7 +146,7 @@ Per-user consumption. Same no-date caveat as `studio_agent`.
 **Merge key:** `snapshot_month`, `user_id`, `agent_id`.
 
 > **This will not add up to the tenant total, and that is correct.** Agent and environment
-> consumption carries no user, so the per-user total is always smaller. CreditLens computes the gap
+> consumption carries no user, so the per-user total is always smaller. Consumption Central computes the gap
 > and states it on the page rather than hiding it.
 
 ---

@@ -1,6 +1,6 @@
 name: Check docs and notebooks
 
-# Several of the exports CreditLens reads are preview features whose portals
+# Several of the exports Consumption Central reads are preview features whose portals
 # move, so the docs link out a lot. This catches a broken internal link or a
 # notebook that will not parse before a customer hits it.
 

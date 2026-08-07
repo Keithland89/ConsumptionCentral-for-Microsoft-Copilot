@@ -1,10 +1,10 @@
 <div align="center">
 
-# 💳 CreditLens
+# 💳 Consumption Central
 
 ### *for Microsoft Copilot* — one Power BI template for **Copilot credit consumption and cost** across Cowork/Work IQ, Copilot Studio and GitHub Copilot.
 
-[![Built by Microsoft](https://img.shields.io/badge/BUILT_BY-MICROSOFT-4F73B8?style=for-the-badge&labelColor=1C2632)](https://github.com/microsoft/CreditLens-for-Microsoft-Copilot)
+[![Built by Microsoft](https://img.shields.io/badge/BUILT_BY-MICROSOFT-4F73B8?style=for-the-badge&labelColor=1C2632)](https://github.com/microsoft/Consumption Central-for-Microsoft-Copilot)
 [![Power BI Template](https://img.shields.io/badge/POWER_BI-TEMPLATE-F2C811?style=for-the-badge&logo=powerbi&logoColor=1C2632&labelColor=1C2632)](#-pick-a-deployment-path)
 [![Deploy](https://img.shields.io/badge/DEPLOY-CSV_%2B_FABRIC_%2B_VIVA_DIRECT-09B39D?style=for-the-badge&labelColor=1C2632)](#-pick-a-deployment-path)
 
@@ -12,7 +12,7 @@
 
 **[Deployment paths ↓](#-pick-a-deployment-path)** · **[What it measures ↓](#-what-it-measures)** · **[Data sources ↓](#-data-sources)** · **[Pages ↓](#-dashboard-pages)**
 
-![CreditLens — all fourteen pages](Images/CreditLens-Preview.gif)
+![Consumption Central — all fourteen pages](Images/ConsumptionCentral-Preview.gif)
 
 <sub>All fourteen pages, shown with the synthetic sample dataset.</sub>
 
@@ -39,7 +39,7 @@ Not supported through Microsoft support channels — please open an issue in thi
 
 ## ✅ Bring whichever products you have
 
-CreditLens covers three — **Cowork/Work IQ**, **Copilot Studio** and **GitHub Copilot**.
+Consumption Central covers three — **Cowork/Work IQ**, **Copilot Studio** and **GitHub Copilot**.
 
 > ### **None of them is required. One is enough.**
 >

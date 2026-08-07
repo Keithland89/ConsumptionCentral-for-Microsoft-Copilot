@@ -1,6 +1,6 @@
 # Sample data
 
-A synthetic dataset so you can see CreditLens working before you go and collect your own exports.
+A synthetic dataset so you can see Consumption Central working before you go and collect your own exports.
 
 **None of this is real.** It is generated data for a fictional insurance company — invented people,
 invented departments, invented usage. It carries no tenant's information and nothing here should be

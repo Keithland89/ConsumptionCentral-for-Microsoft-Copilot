@@ -1,6 +1,6 @@
 # Measure reference
 
-Every documented measure in the CreditLens model, grouped as it appears in the Power BI
+Every documented measure in the Consumption Central model, grouped as it appears in the Power BI
 field list.
 
 **This file is generated from the model itself** — the descriptions here are the same ones

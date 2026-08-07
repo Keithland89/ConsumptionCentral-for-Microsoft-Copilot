@@ -1,6 +1,6 @@
 # Automating the landing step
 
-Three of CreditLens's four sources have **no REST API** — Viva consumption, Copilot Studio, and Entra org
+Three of Consumption Central's four sources have **no REST API** — Viva consumption, Copilot Studio, and Entra org
 attributes all have to be exported by hand. Only GitHub can be pulled directly, which
 [`Ingest_GitHub_API.ipynb`](../notebooks/Ingest_GitHub_API.ipynb) does.
 
@@ -88,7 +88,7 @@ click download; it is someone downloading it and putting it somewhere the pipeli
 
 ## Re-runs are safe
 
-Every CreditLens ingester merges on a natural key, so re-landing the same export updates rather than
+Every Consumption Central ingester merges on a natural key, so re-landing the same export updates rather than
 duplicates. You can leave old files in the landing folder, or prune them — neither changes the
 numbers.
 

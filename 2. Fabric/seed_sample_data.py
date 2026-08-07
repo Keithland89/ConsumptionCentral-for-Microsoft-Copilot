@@ -2,7 +2,7 @@
 Load the sample dataset straight into a Fabric Lakehouse.
 
 The quickest way to see the Fabric template working. It writes the nine
-CreditLens tables from the synthetic CSVs in `1. Local CSV/sample-data/`, so
+Consumption Central tables from the synthetic CSVs in `1. Local CSV/sample-data/`, so
 you can point the template at a real Lakehouse without first standing up the
 ingester notebooks, arranging exports, or waiting for a billing cycle.
 
@@ -20,7 +20,7 @@ Authentication is whoever `az login` signed in as, and that identity needs
 write access to the Lakehouse. No secret is stored anywhere.
 
 WHAT IT WILL AND WILL NOT TOUCH
-It overwrites the nine CreditLens tables and refuses to write anything else.
+It overwrites the nine Consumption Central tables and refuses to write anything else.
 Lakehouses are often shared, so a script that takes a name and deletes what it
 is told is not a script worth running.
 """
@@ -84,7 +84,7 @@ def main():
         return pd.read_csv(os.path.join(a.sample_dir, n), encoding="utf-8-sig")
 
     def put(name, df):
-        assert name in OURS, f"{name} is not a CreditLens table"
+        assert name in OURS, f"{name} is not a Consumption Central table"
         df = df.copy()
         df["_loaded_at"] = loaded_at
         write_deltalake(f"{uri}/{name}", df, mode="overwrite",

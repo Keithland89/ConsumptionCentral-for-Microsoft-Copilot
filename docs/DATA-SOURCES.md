@@ -1,6 +1,6 @@
 # Data sources
 
-Everything CreditLens reads, where it comes from, and what it looks like.
+Everything Consumption Central reads, where it comes from, and what it looks like.
 
 > **You don't need all of it.** Every source below is optional. Bring one product and its pages
 > work; the rest come up empty. Skip to the section for whatever you have.
@@ -71,7 +71,7 @@ for you" — but not this click-path.)*
 of the Data Protection Addendum, and check whether per-person reporting needs works-council consent
 in your jurisdiction, before you turn it on.
 
-**CreditLens handles both shapes automatically** — you do not need to decide before starting.
+**Consumption Central handles both shapes automatically** — you do not need to decide before starting.
 
 ### Grain and history
 
@@ -80,7 +80,7 @@ in your jurisdiction, before you turn it on.
 | **Weekly** | Week | Previous **5 complete months** plus month-to-date | Activity 2–8 days before export |
 | **Daily** | Day | Start of the previous month to the export date | Activity up to 2 days before |
 
-Use **weekly** for CreditLens. Every Cowork page is built on weekly grain, and the forecast fits its
+Use **weekly** for Consumption Central. Every Cowork page is built on weekly grain, and the forecast fits its
 trend across whatever weeks you load.
 
 There is **no scheduled CSV export and no REST API** — each CSV run is a point-in-time download. But
@@ -131,13 +131,13 @@ The ZIP is named like `ConsumptionDashboard-Weekly-Identified_Aug04_2026_1859Hou
 | Column | Notes |
 |---|---|
 | `SpendingPolicyId` | |
-| `Name` | Blank on the all-zero GUID row; CreditLens renders that as "(Unassigned)" |
+| `Name` | Blank on the all-zero GUID row; Consumption Central renders that as "(Unassigned)" |
 | `PlanLimit` | Total monthly credit budget for the whole policy |
 | `UserLimit` | Optional per-user cap within it |
 | `IncludedServices` | e.g. `Cowork;WorkIQ` |
 
 > ⚠️ **No official column-level schema published.** The above is from real exports. If your file
-> differs, CreditLens matches column names case-insensitively and ignoring spaces, dashes and
+> differs, Consumption Central matches column names case-insensitively and ignoring spaces, dashes and
 > underscores, so minor naming changes are absorbed automatically. A genuinely new column is ignored.
 
 ### Spending policies
@@ -160,7 +160,7 @@ sending mail, scheduling, drafting, deep research, scheduled automations.
 
 As of August 2026 the two services under usage-based billing are **Cowork** and **Work IQ API**
 ([usage-based-billing-overview][s1e], updated 2026-07-30). Microsoft has said more will follow, so
-treat `ServiceName` as an open list — CreditLens groups by whatever values it finds.
+treat `ServiceName` as an open list — Consumption Central groups by whatever values it finds.
 
 ---
 
@@ -181,7 +181,7 @@ treat `ServiceName` as an open list — CreditLens groups by whatever values it 
 > not a CSV export from it.
 >
 > **What is confirmed:** PPAC is a **CSV download** surface for this data. There is no API for the
-> per-agent and per-user grain that CreditLens uses, so this source is manual on every path,
+> per-agent and per-user grain that Consumption Central uses, so this source is manual on every path,
 > including Fabric. Look for a **Download** or **Export** control on each tab.
 >
 > If you cannot find one, skip it — the Studio pages stay empty and the other two products are
@@ -190,7 +190,7 @@ treat `ServiceName` as an open list — CreditLens groups by whatever values it 
 ### Files and columns
 
 The exports are named `EntitlementConsumption*_MCSMessages*.csv`, sometimes with a `_30` / `_180`
-day-window suffix. CreditLens matches those names first and falls back to a looser pattern, so a
+day-window suffix. Consumption Central matches those names first and falls back to a looser pattern, so a
 renamed file still works.
 
 > *(Filenames confirmed against
@@ -221,7 +221,7 @@ renamed file still works.
 
 > **On the missing dates:** the per-agent and per-user files appear to be period aggregates for the
 > current month-to-date, consistent with PPAC's documented "current month-to-date, the last two full
-> months" behaviour. CreditLens therefore treats them as period totals and does **not** plot them on
+> months" behaviour. Consumption Central therefore treats them as period totals and does **not** plot them on
 > a time axis — only the tenant daily file drives Studio trends. This is why the Studio forecast
 > extends a daily run rate rather than fitting a growth curve: there is not enough dated history to
 > fit one honestly.
@@ -263,7 +263,7 @@ link to your primary account email. The link is valid for **24 hours**.
 `cost_center_name` ([billing-reports][s3b])
 
 > ⚠️ Real exports also carry `total_monthly_quota`, `aic_quantity` and `aic_gross_amount`, which are
-> **not** in the published reference. They are likely newer additions. CreditLens reads them where
+> **not** in the published reference. They are likely newer additions. Consumption Central reads them where
 > present and does not fail when they are absent.
 
 ### API — yes, and better than expected
@@ -369,7 +369,7 @@ breakdowns. That is most of the chargeback story, so it is worth the effort.
 | `manager` | Standard Entra property, but **not** in the classic download. Use Graph, or the preview download with *Employee org data* selected. |
 | `costCenter`, `jobFamily`, `businessUnit` | ❌ **Not standard Entra properties.** Extension attributes, usually populated by an HR sync. Names vary per tenant. |
 
-**CreditLens does not require any of them.** The org loader recognises a range of spellings, carries
+**Consumption Central does not require any of them.** The org loader recognises a range of spellings, carries
 through anything it does not recognise, and creates any expected-but-missing column as empty — so one
 absent attribute cannot break the Group By control or any measure that groups by org.
 
@@ -392,7 +392,7 @@ For `costCenter` / `jobFamily` / `businessUnit` you need your tenant's own exten
 
 ## What happens when something is missing
 
-CreditLens is built to degrade rather than break:
+Consumption Central is built to degrade rather than break:
 
 | Missing | Effect |
 |---|---|

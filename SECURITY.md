@@ -56,7 +56,7 @@ Microsoft follows the principle of
 
 ## A note specific to this repository
 
-CreditLens ships **no credentials and no customer data**. The `.pbit` templates carry query
+Consumption Central ships **no credentials and no customer data**. The `.pbit` templates carry query
 definitions and a data model only — Power BI templates never store connection credentials by design.
 
 The sample data under `1. Local CSV/sample-data/` is entirely synthetic.
