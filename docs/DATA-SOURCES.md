@@ -90,7 +90,7 @@ there *is* a certified **Power Query connector**, which changes the picture cons
   See [3. Viva Direct](../3.%20Viva%20Direct/).
   ([Learn][pbiconn])
 - **Fabric** — a Dataflow Gen2 writes query results straight into a Lakehouse table on a schedule.
-  See [Automating the Viva load](../2.%20Fabric/README.md#automating-the-viva-load).
+  See [The Viva half can run itself](../2.%20Fabric/README.md#the-viva-half-can-run-itself).
   ([Learn][fabconn])
 
 Either way, **auto-refresh must also be enabled on the query itself** in Viva Insights → Analysis
@@ -346,7 +346,98 @@ Four things worth knowing, all confirmed:
 
 ---
 
-## 4. Org attributes — Microsoft Entra *(optional)*
+## 4. Azure AI Foundry
+
+Two exports, and you can start with just the first. Spend alone gives you cost,
+cost per million tokens and the input/output split. The metrics export adds
+provisioned-capacity utilisation, which is where the money usually hides.
+
+### Where — spend
+
+| | |
+|---|---|
+| **Portal** | <https://portal.azure.com> |
+| **Path** | **Cost Management** → **Cost analysis** → view as **Table** → **Download** |
+| **Role** | Cost Management Reader on the subscription |
+
+Group by **Service name**, **Meter** and **Resource**, set granularity to **Daily**, and pick your date
+range. Export as CSV. Or schedule it: **Cost Management** → **Exports** → daily to a storage account.
+
+> ⚠️ **The service is called `Foundry Models`, not "Azure OpenAI".** Filtering on the old name returns
+> nothing at all — an empty page that looks exactly like "we have no Foundry spend". Verified against
+> live cost data, 2026-08-08.
+
+> ⚠️ **The dimension is `Meter`, not `MeterName`.** The Cost Management UI and the older API reference
+> disagree; the export column is `Meter`. Consumption Central accepts either.
+
+> 💡 **Copilot Studio pay-as-you-go shows up here too**, as `Pay As You Go Copilot Credit` under service
+> `Microsoft Copilot Studio`, priced at exactly $0.01. That is genuinely useful: the Studio pages compute
+> PAYG cost from a rate you typed into a parameter, and this is the invoice. The Foundry page reconciles
+> the two. When they disagree, the parameter is wrong — which is otherwise a completely silent error,
+> because every figure derived from a wrong rate still looks entirely plausible.
+
+### Columns — `AzureAiSpendDaily.csv`
+
+`UsageDate`, `ServiceName`, `MeterCategory`, `Meter`, `ResourceId`, `ResourceName`, `ResourceGroup`,
+`Cost`, `UsageQuantity`, `Currency`, `DepartmentTag`
+
+`DepartmentTag` is optional and comes from an Azure resource tag — whatever you use to attribute
+resources to teams. Tag your Foundry resources and the Foundry page can break spend down by department.
+Leave it empty and everything else still works.
+
+Model name and token direction are **parsed from `Meter`**, so you do not need to supply them.
+
+### Where — tokens and utilisation *(optional)*
+
+| | |
+|---|---|
+| **Portal** | Azure Portal → your Azure AI Foundry resource → **Monitoring** → **Metrics** |
+| **Role** | Monitoring Reader |
+
+Chart `InputTokens`, `OutputTokens` and `ProvisionedUtilization`, split by **Deployment**, daily, then
+**Download to Excel**. Or via CLI:
+
+```bash
+az monitor metrics list \
+  --resource <resource-id> \
+  --metric InputTokens OutputTokens ProvisionedUtilization \
+  --interval P1D --start-time 2026-05-01 --end-time 2026-08-01 \
+  --output tsv
+```
+
+> ⚠️ **Metric names changed, and both sets may be live at once.** Older material says
+> `ProcessedPromptTokens`, `GeneratedTokens` and `AzureOpenAIProvisionedManagedUtilizationV2`; the
+> current names are `InputTokens`, `OutputTokens` and `ProvisionedUtilization`. Checked against live
+> resources, a single account can publish **both** sets simultaneously. Consumption Central accepts
+> either, and `pull_azure_ai.py` asks each resource which it actually has.
+>
+> Requesting a metric a resource does **not** publish returns a well-formed series of **zeros** rather
+> than an error — which reads as an idle deployment instead of a wrong name, and is how an hour
+> disappears.
+
+> ⚠️ **Partly verified.** The metric names are confirmed: two live AI resources publish **both** the
+> current and the older set side by side, which is why the template accepts either. What has *not*
+> been seen is this path carrying real token volume — the tenant it was built against has no traffic
+> on those deployments, so every call succeeded and returned zero rows. The spend half is fully
+> verified against real invoices. If your token columns land differently, please open an issue.
+
+### Columns — `AzureAiTokensDaily.csv`
+
+`Date`, `ResourceName`, `ResourceGroup`, `Deployment`, `Metric`, `Value`
+
+Long format, one row per metric per day. `Metric` holds the metric name; `Value` holds the number.
+
+### What provisioned utilisation is worth
+
+PTU capacity is paid for whether it is used or not, so idle provisioned throughput is the Azure
+equivalent of an unassigned GitHub Copilot seat: real money, invisible on a spend chart, and
+recoverable. The Foundry page calls it out below 30%.
+
+If you have no provisioned deployment, skip this export. The page says so rather than showing zero.
+
+---
+
+## 5. Org attributes — Microsoft Entra *(optional)*
 
 Without this file every page still works, but you lose department, cost-centre and business-unit
 breakdowns. That is most of the chargeback story, so it is worth the effort.
@@ -399,6 +490,8 @@ Consumption Central is built to degrade rather than break:
 | Org file | Pages work; Group By offers fewer attributes; no department breakdown |
 | One org column | That attribute disappears from Group By. Nothing else changes. |
 | Studio files | Studio pages empty. Cowork and GitHub unaffected. |
+| Azure AI spend file | Foundry page empty. Others unaffected. |
+| Azure AI tokens file | Foundry cost still works; token and PTU visuals empty. |
 | GitHub files | GitHub pages empty. Others unaffected. |
 | `PeopleMetaData` / `PersonPolicyMap` | Roster is derived from the metrics file instead — see below |
 | Cowork metrics file | Cowork pages empty. This is the one file worth having. |

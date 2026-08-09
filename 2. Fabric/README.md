@@ -40,10 +40,26 @@ Lakehouse at the top of each, run.
 | `Ingest_Viva_Consumption` | Viva Insights export | `viva_credits_weekly`, `viva_spending_policy` |
 | `Ingest_Studio` | Power Platform exports | `studio_*` |
 | `Ingest_GitHub_API` | GitHub REST API | `github_*` |
+| `Ingest_Azure_AI` | Azure Cost Management + Monitor | `azure_ai_spend`, `azure_ai_tokens` |
 | `Ingest_Org` | Entra export | `org_attributes` |
 | `Ingest_CommercialTerms` | Azure Cost Management | `commercial_terms` |
 
 **[Where each export comes from →](../docs/DATA-SOURCES.md)**
+
+
+### 2b. Azure AI Foundry tables *(optional)*
+
+The Foundry page reads two tables. Both are optional — leave them out and the page is simply empty,
+which is a supported state, not a failure.
+
+| Table | From | Columns |
+|-------|------|---------|
+| `azure_ai_spend` | Cost Management daily export | `UsageDate`, `ServiceName`, `Meter`, `ResourceName`, `ResourceGroup`, `Cost`, `UsageQuantity`, `Currency`, `DepartmentTag` |
+| `azure_ai_tokens` | Azure Monitor metrics | `Date`, `ResourceName`, `ResourceGroup`, `Deployment`, `Metric`, `Value` |
+
+The simplest route is a scheduled Cost Management export to ADLS, then a shortcut or copy into the
+Lakehouse. See [docs/DATA-SOURCES.md](../docs/DATA-SOURCES.md#4-azure-ai-foundry) for the portal path
+and the two naming traps that will otherwise cost you an afternoon.
 
 ### 3. Get the SQL connection string
 

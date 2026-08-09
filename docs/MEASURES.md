@@ -751,3 +751,39 @@ A few conventions worth knowing:
   on every row the moment you grouped by department.
 - **Narrative measures return prose, not numbers.** They branch on the data and are safe to
   put on a card. None of them contains a hardcoded figure, date or judgement.
+
+---
+
+## Azure AI Foundry
+
+All Foundry figures respect the **Period** control on that page (7 / 30 / 90 days, or everything
+loaded). The gate sits on the base measures, so everything derived from them inherits it.
+
+| Measure | What it is |
+|---|---|
+| `Foundry Cost` | Model spend. Excludes the Copilot Studio rows that share the table. |
+| `Foundry Input Cost` / `Foundry Output Cost` | Split by token direction, parsed from the meter name |
+| `Foundry Output Cost Share %` | Output tokens cost several times input, so a rising share explains a rising bill that token counts alone would not |
+| `Foundry Tokens (M)` | Millions of tokens billed |
+| `Foundry Cost per 1M Tokens` | The blended unit price you are actually paying |
+| `Foundry Days Observed` | Days with spend inside the selected window |
+| `Foundry Daily Run Rate` / `Foundry Cost /mo` | Run rate, and that rate over 30 days |
+| `Foundry Billing Period` | The dates the page currently covers |
+
+**Tokens and provisioned capacity**
+
+| Measure | What it is |
+|---|---|
+| `Prompt Tokens` / `Generated Tokens` / `Total Tokens` | From Azure Monitor, accepting either the current or the older metric names |
+| `AI Requests` / `Tokens per Request` | Volume, and average size per call |
+| `PTU Utilisation %` | Mean utilisation of provisioned throughput. **AVERAGE, not SUM** — summing a percentage across days produces a number in the thousands that looks like a catastrophe. |
+| `PTU Verdict` | Plain-English reading. Below 30% means capacity is largely idle. |
+
+**Studio reconciliation**
+
+| Measure | What it is |
+|---|---|
+| `Studio PAYG Billed (Azure)` | What Azure actually invoiced for Copilot Studio pay-as-you-go |
+| `Studio PAYG Credits (Azure)` | The same, as credits |
+| `Studio Rate Implied by Azure` | Divide one by the other and you get the real rate. Compare with the rate in your parameters — when they disagree, the parameter is wrong. |
+

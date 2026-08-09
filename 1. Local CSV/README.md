@@ -27,7 +27,7 @@ Anywhere. `C:\Consumption Central\Data` is fine.
 | **Cowork / Work IQ** | Viva Insights → Analysis → build a query → download CSV |
 | **Copilot Studio** | Power Platform admin centre → Licensing → Copilot Studio |
 | **GitHub Copilot** | GitHub → Billing → AI usage report |
-| **Azure AI Foundry** | Azure Cost Analysis → export, or the script in this repo |
+| **Azure AI Foundry** | Azure Cost Analysis → export, or run [`pull_azure_ai.py`](pull_azure_ai.py) |
 
 File names don't have to match exactly — the template recognises the usual variations.
 
