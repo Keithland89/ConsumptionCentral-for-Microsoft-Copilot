@@ -121,7 +121,7 @@ Steps: **[docs/BUILD.md](BUILD.md)**
 
 The part that matters most:
 
-- [ ] Reset `DataFolder` to the neutral placeholder `C:\CreditLens\Data`
+- [ ] Reset `DataFolder` to the neutral placeholder `C:\Consumption Central\Data`
 - [ ] Reset the six commercial parameters — `0.01`, `0.008`, `0`, `19`, `39`, `4`
 - [ ] Check the Settings query still holds `#date(2026, 9, 1)`, `1900`, `3900`
 - [ ] **File → Export → Power BI template**

@@ -23,7 +23,7 @@ source parameters differ.
 
    | Parameter | Ship as |
    |---|---|
-   | `DataFolder` | `C:\CreditLens\Data` — a neutral placeholder |
+   | `DataFolder` | `C:\Consumption Central\Data` — a neutral placeholder |
    | `CreditRate` | `0.01` |
    | `PrepaidCreditRate` | `0.008` |
    | `PrepaidCreditBalance` | `0` |
@@ -70,7 +70,7 @@ What changed from the CSV project, if it ever needs redoing:
 To export the `.pbit`:
 
 1. Open `ConsumptionCentral-Fabric\...pbip`, confirm `FabricSQLEndpoint` and `LakehouseName` hold shipping
-   placeholders (`your-endpoint.datawarehouse.fabric.microsoft.com`, `creditlens`).
+   placeholders (`your-endpoint.datawarehouse.fabric.microsoft.com`, `consumption-central`).
 2. **File → Export → Power BI template**, same description as above but pointing at a Lakehouse.
 3. Save as `2. Fabric\Consumption Central - Fabric.pbit`.
 
