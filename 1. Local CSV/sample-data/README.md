@@ -18,7 +18,7 @@ compares like with like.
 | `SpendingPolicyMetadata.csv` | 42 | Spending policies with plan and user limits |
 | `PersonPolicyMap.csv` | 1,020 | Person → policy map |
 | `PeopleMetaData.csv` | 1,020 | Organisation and licence flag per person |
-| `entra_org.csv` | 1,020 | Department, cost centre, job family, manager |
+| `entra_org.csv` | 1,020 | Department, cost centre, job family, manager, country, city |
 | `StudioTenantDaily.csv` | 810 | Copilot Studio, environment × day |
 | `StudioPerAgent.csv` | 40 | Studio agent totals |
 | `StudioPerUser.csv` | 240 | Studio user totals, reconciling to the tenant file |
@@ -39,6 +39,9 @@ The data is shaped to exercise the parts of the report that matter, rather than 
   surface — capacity paid for and not used.
 - **Foundry spend is tagged with real departments**, so Group By reaches it like every other product.
 - **A few people are licensed and completely inactive**, which is what the optimisation pages look for.
+- **Every Group By attribute splits sensibly** — 16 departments, 14 job families, 6 countries,
+  20 cities, 35 managers. None of them dominated by a single value, so the breakdowns are worth
+  looking at rather than one bar and a sliver.
 
 ## Using it
 
