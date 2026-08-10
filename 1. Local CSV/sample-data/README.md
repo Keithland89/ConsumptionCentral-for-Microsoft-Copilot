@@ -1,12 +1,16 @@
 # Sample data
 
-A synthetic dataset so you can see Consumption Central working before you go and collect your own exports.
+A synthetic dataset so you can see Consumption Central working before you go and collect your own
+exports. Set **`DataFolder`** to this folder and everything loads.
 
 **None of this is real.** It is generated data for a fictional insurance company — invented people,
 invented departments, invented usage. It carries no tenant's information and nothing here should be
 read as a benchmark.
 
 ## What's here
+
+All four products, over the same thirteen weeks — **3 May to 31 July 2026** — so the combined page
+compares like with like.
 
 | File | Rows | Represents |
 |---|---|---|
@@ -15,23 +19,32 @@ read as a benchmark.
 | `PersonPolicyMap.csv` | 1,020 | Person → policy map |
 | `PeopleMetaData.csv` | 1,020 | Organisation and licence flag per person |
 | `entra_org.csv` | 1,020 | Department, cost centre, job family, manager |
-| `StudioTenantDaily.csv` | 31 | Copilot Studio, tenant × environment × day |
-| `StudioPerAgent.csv` | 448 | Studio agent totals |
-| `StudioPerUser.csv` | 29 | Studio user totals |
-| `GitHubAiUsage.csv` | 3,000 | GitHub AI credit usage, person × day |
+| `StudioTenantDaily.csv` | 810 | Copilot Studio, environment × day |
+| `StudioPerAgent.csv` | 40 | Studio agent totals |
+| `StudioPerUser.csv` | 240 | Studio user totals, reconciling to the tenant file |
+| `GitHubAiUsage.csv` | 11,916 | GitHub AI credit usage, person × day |
 | `GitHubUserMap.csv` | 219 | GitHub seats with plan and included credits |
+| `AzureAiSpendDaily.csv` | 1,473 | Azure AI Foundry spend by meter and resource |
+| `AzureAiTokensDaily.csv` | 1,530 | Foundry token counts and PTU utilisation |
 
-The Cowork and GitHub files are trimmed from a larger set to keep the repo small, so totals here are
-lower than a full year of a real tenant. Shapes, column names and relationships are faithful.
+## What the demo shows
+
+The data is shaped to exercise the parts of the report that matter, rather than to look tidy:
+
+- **GitHub crosses its allowance.** May sits at 0.63× the credit pool and costs nothing. June lands
+  almost exactly on it. July runs to 1.34× and bills about $4,000. That is what the overage measures,
+  the cost pages and the September allowance change are all there to show.
+- **Studio consumes both prepaid and pay-as-you-go**, so the cost split has two bars rather than one.
+- **Provisioned Azure capacity sits near 30%**, which is the finding the Foundry page exists to
+  surface — capacity paid for and not used.
+- **Foundry spend is tagged with real departments**, so Group By reaches it like every other product.
+- **A few people are licensed and completely inactive**, which is what the optimisation pages look for.
 
 ## Using it
 
-> **The `.pbit` is not built yet.** See [docs/BUILD.md](../../docs/BUILD.md) — it is a short manual
-> step, because Power BI Desktop has no command-line template export. Until then, open the PBIP
-> project directly.
-
-Set the **`DataFolder`** parameter to this folder. That is the only one that has to change — the
-files are found by name, so nothing needs renaming and nothing needs a path of its own.
+Set the **`DataFolder`** parameter to this folder. That is the only one that has to change — files are
+found by name, so nothing needs renaming and nothing needs a path of its own. That now includes the
+two Azure files: drop them in with the rest and the Foundry page fills in.
 
 Leave the commercial parameters at their defaults for a first look. The cost pages will then be
 arithmetic on list prices rather than your agreement, which is fine for seeing the shape of it.

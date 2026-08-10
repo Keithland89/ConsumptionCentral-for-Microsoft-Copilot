@@ -20,7 +20,7 @@ Authentication is whoever `az login` signed in as, and that identity needs
 write access to the Lakehouse. No secret is stored anywhere.
 
 WHAT IT WILL AND WILL NOT TOUCH
-It overwrites the nine Consumption Central tables and refuses to write anything else.
+It overwrites the eleven Consumption Central tables and refuses to write anything else.
 Lakehouses are often shared, so a script that takes a name and deletes what it
 is told is not a script worth running.
 """
@@ -218,6 +218,37 @@ def main():
     }))
 
     # ---- Org --------------------------------------------------------------
+
+    # ---- Azure AI Foundry -------------------------------------------------
+    # Optional, like everything else. Absent tables give an empty Foundry
+    # page rather than a broken model.
+    try:
+        spend = read("AzureAiSpendDaily.csv")
+    except FileNotFoundError:
+        spend = None
+    if spend is not None and len(spend):
+        spend["UsageDate"] = pd.to_datetime(spend["UsageDate"]).dt.date
+        for c in ("Cost", "UsageQuantity"):
+            spend[c] = pd.to_numeric(spend[c], errors="coerce").fillna(0.0)
+        out.append({
+            "table": "azure_ai_spend",
+            "df": spend,
+            "source_file": "AzureAiSpendDaily.csv",
+        })
+
+    try:
+        tok = read("AzureAiTokensDaily.csv")
+    except FileNotFoundError:
+        tok = None
+    if tok is not None and len(tok):
+        tok["Date"] = pd.to_datetime(tok["Date"]).dt.date
+        tok["Value"] = pd.to_numeric(tok["Value"], errors="coerce").fillna(0.0)
+        out.append({
+            "table": "azure_ai_tokens",
+            "df": tok,
+            "source_file": "AzureAiTokensDaily.csv",
+        })
+
     org = read("entra_org.csv")
     put("org_attributes", pd.DataFrame({
         "user_principal_name": org["userPrincipalName"].astype(str).str.lower(),
