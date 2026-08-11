@@ -77,6 +77,12 @@ fills in — no exports, no waiting for a billing cycle, no real data.
 
 **[1. Local CSV/sample-data](1.%20Local%20CSV/sample-data/)**
 
+### Two-minute walkthrough
+
+A short narrated tour of what the report covers and how it is put together.
+
+**[▶ Watch the demo](media/ConsumptionCentral-Demo.mp4)** *(1m50s — download to play)*
+
 ---
 
 ## More detail, when you want it
