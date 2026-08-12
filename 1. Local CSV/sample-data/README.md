@@ -24,7 +24,7 @@ compares like with like.
 | `StudioPerUser.csv` | 240 | Studio user totals, reconciling to the tenant file |
 | `GitHubAiUsage.csv` | 11,916 | GitHub AI credit usage, person × day |
 | `GitHubUserMap.csv` | 219 | GitHub seats with plan and included credits |
-| `AzureAiSpendDaily.csv` | 1,473 | Azure AI Foundry spend by meter and resource |
+| `AzureAiSpendDaily.csv` | 1,698 | Azure AI Foundry spend by meter and resource |
 | `AzureAiTokensDaily.csv` | 1,530 | Foundry token counts and PTU utilisation |
 
 ## What the demo shows
@@ -38,6 +38,10 @@ The data is shaped to exercise the parts of the report that matter, rather than 
 - **Provisioned Azure capacity sits near 30%**, which is the finding the Foundry page exists to
   surface — capacity paid for and not used.
 - **Foundry spend is tagged with real departments**, so Group By reaches it like every other product.
+- **Foundry meters use both spellings.** Azure abbreviates the token direction inconsistently — the
+  set carries the long forms (`GPT 5 Inpt Glbl 1M Tokens`) and the short ones (`5.4 inp Gl 1M Tokens`,
+  `5.4 opt Gl 1M Tokens`), plus a cached meter (`5.4 cd inp Gl 1M Tokens`). Anything that breaks the
+  `TokenDirection` parsing shows up here as an `Other` bucket on the Foundry page.
 - **A few people are licensed and completely inactive**, which is what the optimisation pages look for.
 - **Every Group By attribute splits sensibly** — 16 departments, 14 job families, 6 countries,
   20 cities, 35 managers. None of them dominated by a single value, so the breakdowns are worth
