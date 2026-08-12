@@ -392,6 +392,38 @@ Leave it empty and everything else still works.
 
 Model name and token direction are **parsed from `Meter`**, so you do not need to supply them.
 
+<details>
+<summary>How the meter name is parsed into <code>Model</code> and <code>TokenDirection</code></summary>
+
+Azure abbreviates the token direction inconsistently between meters, and the abbreviations change
+as new models are onboarded. Consumption Central accepts all the spellings seen so far:
+
+| `TokenDirection` | Matched from the meter name |
+|---|---|
+| `Input` | `input`, `inpt` anywhere; `inp` as a whole word |
+| `Output` | `output`, `outpt` anywhere; `opt`, `outp` as whole words |
+| `Cached` | `cach` anywhere; `cd`, `cchd` as whole words |
+| `Other` | anything else — e.g. `Pay As You Go Copilot Credit`, which is not a token meter |
+
+So `GPT 4.1 Inpt Glbl 1M Tokens` and `5.4 inp Gl 1M Tokens` both resolve to `Input`.
+
+Two rules matter if you are extending this:
+
+- **The short forms match whole words only.** `opt` also sits inside *optimized* and *copilot*, and
+  `cd` inside *cdn*, so matching them as substrings would mislabel unrelated meters. The long forms
+  are distinctive enough to match anywhere.
+- **Cached wins.** A cached meter names the direction too (`GPT 4o Cached Input Tokens`), and cached
+  input is priced separately from fresh input, so the cache marker is tested first.
+
+`Model` is whatever precedes the first direction word — `5.4 cd inp Gl 1M Tokens` → `5.4`. A meter
+with no direction word keeps its full name as the model, which is what you want for non-token meters.
+
+Hitting a meter spelling that lands in `Other`? Please
+[open an issue](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues) with the
+meter string — the list above is only as good as the exports we have seen.
+
+</details>
+
 ### Where — tokens and utilisation *(optional)*
 
 | | |
