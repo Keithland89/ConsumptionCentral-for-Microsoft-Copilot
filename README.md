@@ -11,16 +11,19 @@
 
 ![Consumption Central](Images/ConsumptionCentral-Preview.gif)
 
-### 🎬 Watch first
-
-| | | |
-|---|---|---|
-| **[▶ Demo](media/ConsumptionCentral-Demo.mp4)** | What the report covers, page by page | **1m 51s** |
-| **[▶ Setup guide](media/ConsumptionCentral-Setup.mp4)** | Getting your own data in — every source, start to finish | **7m 12s** |
-
-*Click either link, then press **Download** on the GitHub page to play.*
-
 </div>
+
+## Watch first
+
+Both play here in the page — no download.
+
+**Demo — what the report covers, page by page** *(1m 51s)*
+
+https://github.com/user-attachments/assets/702d94f7-74fc-43ad-a259-d00695f76a9c
+
+**Setup guide — getting your own data in, every source, start to finish** *(7m 12s)*
+
+https://github.com/user-attachments/assets/22662513-feb6-4bec-8e03-3e9338cf9217
 
 ---
 
@@ -88,12 +91,10 @@ fills in — no exports, no waiting for a billing cycle, no real data.
 
 ### Narrated walkthroughs
 
-| | What it covers |
-|---|---|
-| **[▶ Demo](media/ConsumptionCentral-Demo.mp4)** *(1m 51s)* | A tour of the fifteen pages and what each one answers |
-| **[▶ Setup guide](media/ConsumptionCentral-Setup.mp4)** *(7m 12s)* | Every data source — which ones automate, which need a download, and the admin consent Viva needs before it will name a user |
+Both are at the [top of this page](#watch-first) and play inline.
 
-Both are narrated. Click through and press **Download** on the GitHub page to play.
+- **Demo** *(1m 51s)* — a tour of the fifteen pages and what each one answers.
+- **Setup guide** *(7m 12s)* — every data source: which ones automate, which need a download, and the admin consent Viva needs before it will name a user.
 
 ---
 
