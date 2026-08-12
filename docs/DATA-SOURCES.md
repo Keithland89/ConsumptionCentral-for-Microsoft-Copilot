@@ -50,9 +50,10 @@ This matters, and it changes which files you get.
 | **Identified** | Real `UserPrincipalName` + `EntraId` | — |
 | **De-identified** | Anonymised `PersonId` | `PeopleMetaData.csv`, `PersonPolicyMap.csv` |
 
-De-identified is the **default**. Turning on identifiable export is a Global Admin job:
+De-identified is the **default**. Turning identification on is a **Global Administrator or AI
+Administrator** job — either role can do every step ([identification-copilot-analytics][s1g]):
 
-**Microsoft 365 admin center → Settings → Viva → Settings tab → Feature access management**
+**Microsoft 365 admin center → Settings → Org settings → Viva feature access → Viva Insights**
 
 Create or edit a policy with:
 
@@ -63,9 +64,13 @@ Create or edit a policy with:
 | Access setting | **On** |
 | Applies to | Everyone, or a named group |
 
-*(Verified in the portal 2026-08-04. The docs describe the behaviour — "personal identifiers are
-removed and replaced with anonymized IDs, unless your administrator has enabled identifiable export
-for you" — but not this click-path.)*
+Scoping limits: **20 users or groups per policy**, **10 policies per feature**, or one tenant-wide
+policy. PowerShell works too — `Add-VivaModuleFeaturePolicy` writes to the same store, so a policy
+made either way is visible in both.
+
+*(Documented at [identification-copilot-analytics][s1g], updated 2026-08-03. An earlier version of
+this page said the click-path was undocumented and that it required Global Admin — both were wrong.
+AI Administrator is sufficient, which is a much smaller ask.)*
 
 **Identifiable export is a public preview that processes personal data.** Read the "Previews" section
 of the Data Protection Addendum, and check whether per-person reporting needs works-council consent
@@ -512,6 +517,7 @@ If you need the full entitled roster, supply the map files from a de-identified 
 [s1d]: https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/
 [s1e]: https://learn.microsoft.com/en-us/microsoft-365/copilot/usage-based-billing-overview-copilot-credits
 [s1f]: https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric
+[s1g]: https://learn.microsoft.com/en-us/viva/insights/identification-copilot-analytics
 [s2a]: https://learn.microsoft.com/en-us/power-platform/admin/manage-copilot-studio-messages-capacity
 [s3a]: https://docs.github.com/en/billing/how-tos/products/view-productlicense-use
 [s3b]: https://docs.github.com/en/billing/reference/billing-reports
@@ -528,6 +534,7 @@ If you need the full entitled roster, supply the map files from a de-identified 
 | s1d | [Microsoft 365 Copilot Cowork][s1d] | 2026-07-27 |
 | s1e | [Usage-based billing overview][s1e] | 2026-07-30 |
 | s1f | [Export query data to Microsoft Fabric][s1f] | 2026-03-06 |
+| s1g | [Identification in Copilot Analytics][s1g] | 2026-08-03 |
 | s2a | [Manage Copilot Studio capacity][s2a] | 2026-08-04 |
 | s3a | [View product and license use][s3a] | 2026-08-04 |
 | s3b | [Billing reports reference][s3b] | 2026-08-04 |
