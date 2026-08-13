@@ -32,17 +32,22 @@ Fabric portal → your workspace → **New** → **Lakehouse**.
 
 ### 2. Import the notebooks
 
-**[notebooks/](notebooks/)** — one per product. Import the ones you need, set the workspace and
-Lakehouse at the top of each, run.
+**Viva does not need one.** It has a certified **Dataflow Gen2** connector that writes query
+results straight into your Lakehouse on a schedule — see [The Viva half needs no
+notebook](#the-viva-half-needs-no-notebook) below. Set that up instead of
+`Ingest_Viva_Consumption`, which exists as a fallback for downloaded CSVs.
+
+For everything else: **[notebooks/](notebooks/)** — one per product. Import the ones you need, set
+the workspace and Lakehouse at the top of each, run.
 
 | Notebook | Reads | Writes |
 |---|---|---|
-| `Ingest_Viva_Consumption` | Viva Insights export | `viva_credits_weekly`, `viva_spending_policy` |
-| `Ingest_Studio` | Power Platform exports | `studio_*` |
 | `Ingest_GitHub_API` | GitHub REST API | `github_*` |
 | `Ingest_Azure_AI` | Azure Cost Management + Monitor | `azure_ai_spend`, `azure_ai_tokens` |
-| `Ingest_Org` | Entra export | `org_attributes` |
 | `Ingest_CommercialTerms` | Azure Cost Management | `commercial_terms` |
+| `Ingest_Studio` | Power Platform exports | `studio_*` |
+| `Ingest_Org` | Entra export | `org_attributes` |
+| `Ingest_Viva_Consumption` | *Fallback only* — Viva CSV export | `viva_credits_weekly`, `viva_spending_policy` |
 
 **[Where each export comes from →](../docs/DATA-SOURCES.md)**
 
@@ -99,13 +104,27 @@ Central tables.
 
 ---
 
-## The Viva half can run itself
+## The Viva half needs no notebook
 
-Viva Insights ships a **Dataflow Gen2** connector that writes query results straight into a
-Lakehouse on a schedule — no download, no notebook.
+Viva Insights ships a certified **Dataflow Gen2** connector that writes query results straight into a
+Lakehouse on a schedule — no download, no notebook. **This is the preferred route on this path.**
 
-Set the query to auto-refresh in Viva, schedule the Dataflow for Tuesday morning, and that half of
-the pipeline looks after itself.
+1. Consumption Dashboard → **Connect data** → the **Microsoft Fabric** tab. Copy the **Partition
+   identifier** and **Query identifier**.
+2. Fabric workspace → **New** → **Dataflow Gen2** → **Get data** → search *Viva Insights* under
+   **Online Services**.
+3. Paste both identifiers. Leave *Query Name* blank. Under **Advanced options** set **Schema Type =
+   Pivoted** and **Data Granularity = Row-level data**. Authenticate with an **Organizational
+   account**.
+4. Set the Lakehouse as the data destination, then schedule the refresh for **Tuesday ~8am PST** —
+   after Viva's weekend refresh.
+
+> **Also turn on auto-refresh for the query itself**, in Viva Insights → Analysis results. Without
+> it the Dataflow refreshes happily against a result that never changes — which looks exactly like
+> everything working.
+
+`Ingest_Viva_Consumption` remains for working from downloaded CSVs, or when Dataflow Gen2 capacity
+cost is not worth it.
 
 **[Microsoft's guide →](https://learn.microsoft.com/en-us/viva/insights/advanced/analyst/export-query-data-microsoft-fabric)**
 

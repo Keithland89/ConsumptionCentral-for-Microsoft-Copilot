@@ -31,8 +31,8 @@ The export dialog offers **Export by week** or **Export by day**, and then two w
 
 | Button | What it does |
 |---|---|
-| **Export to CSV** | Downloads a ZIP. This is what paths [1](../1.%20Local%20CSV/) and [2](../2.%20Fabric/) use. |
-| **Connect data** | Gives a **Partition identifier** and **Query identifier** for a live connection, under either a **Power BI** or a **Microsoft Fabric** tab. See [path 3](../3.%20Viva%20Direct/). |
+| **Export to CSV** | Downloads a ZIP. This is what path [1](../1.%20Local%20CSV/) uses, and it is the fallback on path [2](../2.%20Fabric/). |
+| **Connect data** | Gives a **Partition identifier** and **Query identifier** for a live connection, under either a **Power BI** or a **Microsoft Fabric** tab. Power BI → [path 3](../3.%20Viva%20Direct/); Fabric → a [Dataflow Gen2](../2.%20Fabric/README.md#the-viva-half-needs-no-notebook), which is the **preferred** route on the Fabric path. |
 
 A banner in the dialog says **"Includes user identifiers"** when identifiable export is enabled for
 you. That is the quickest way to tell which shape you are about to get.
@@ -95,7 +95,7 @@ there *is* a certified **Power Query connector**, which changes the picture cons
   See [3. Viva Direct](../3.%20Viva%20Direct/).
   ([Learn][pbiconn])
 - **Fabric** — a Dataflow Gen2 writes query results straight into a Lakehouse table on a schedule.
-  See [The Viva half can run itself](../2.%20Fabric/README.md#the-viva-half-can-run-itself).
+  See [The Viva half needs no notebook](../2.%20Fabric/README.md#the-viva-half-needs-no-notebook).
   ([Learn][fabconn])
 
 Either way, **auto-refresh must also be enabled on the query itself** in Viva Insights → Analysis
@@ -577,3 +577,4 @@ If you need the full entitled roster, supply the map files from a de-identified 
 
 Preview features move. If a click-path here does not match what you see, the portal is right and this
 document is stale — please open an issue.
+

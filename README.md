@@ -21,9 +21,9 @@ Both play here in the page — no download.
 
 https://github.com/user-attachments/assets/702d94f7-74fc-43ad-a259-d00695f76a9c
 
-**Setup guide — getting your own data in, every source, start to finish** *(7m 12s)*
+**Setup guide — getting your own data in, every source, start to finish** *(10m 49s)*
 
-https://github.com/user-attachments/assets/22662513-feb6-4bec-8e03-3e9338cf9217
+https://github.com/user-attachments/assets/480af64f-53ab-4f4c-b5d2-6f35546fdcfb
 
 ---
 
@@ -94,7 +94,7 @@ fills in — no exports, no waiting for a billing cycle, no real data.
 Both are at the [top of this page](#watch-first) and play inline.
 
 - **Demo** *(1m 51s)* — a tour of the fifteen pages and what each one answers.
-- **Setup guide** *(7m 12s)* — every data source: which ones automate, which need a download, and the admin consent Viva needs before it will name a user.
+- **Setup guide** *(10m 49s)* — every data source: which ones automate, which need a download, and the admin consent Viva needs before it will name a user. Then the Fabric path in full — the notebooks, the permission grants, and the Dataflow Gen2 route for Viva.
 
 ---
 
