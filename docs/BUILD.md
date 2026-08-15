@@ -21,6 +21,19 @@ source parameters differ.
    This is the step to be careful about: if `DataFolder` still points at your OneDrive, or the rates
    are a customer's real ones, that ships inside the file.
 
+   > **This step was missed once and it broke the template for everyone.** Every parameter shipped
+   > as `null`. `VivaPeriodStart` computes `BillingPeriodWeeks - 1`, `null - 1` throws, and because
+   > that query feeds the rest, *every* table then reported only "Load was cancelled by an error in
+   > loading a previous table" — which reads like a corrupt CSV rather than an empty parameter box.
+   > See [#6](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues/6).
+   > `VivaPeriodStart` now falls back to 4 if the parameter is empty, so the crash cannot recur,
+   > but the defaults below are still what a customer should see on opening.
+   >
+   > Verify before exporting, from the repo root:
+   > ```
+   > python docs/scripts/check_pbit_defaults.py "1. Local CSV/Consumption Central - Local CSV.pbit"
+   > ```
+
    | Parameter | Ship as |
    |---|---|
    | `DataFolder` | `C:\Consumption Central\Data` — a neutral placeholder |
