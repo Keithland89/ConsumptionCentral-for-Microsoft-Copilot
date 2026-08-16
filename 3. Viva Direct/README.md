@@ -24,6 +24,26 @@ Copilot Studio, GitHub and Azure AI, which are optional.
 
 ---
 
+## Either Viva source works
+
+The connector reads **two different shapes**, and one parameter tells them apart:
+
+| Your source | `VivaExportName` |
+|---|---|
+| **Custom query** — you built it in Analysis | **leave blank** |
+| **Consumption Dashboard export** | **set it** to the export name |
+
+A custom query returns a single table, so no table name is sent. A Consumption Dashboard export is
+multi-table and named, so the name has to go with the request — omit it and the service returns a
+bare `500` rather than saying a name was needed.
+
+This can't be detected automatically: `VivaInsights.Data` hands back a *lazy* table, so probing it
+reports success whether or not the table can actually be read.
+
+**[Full connector reference →](../docs/VIVA-CONNECTOR.md)**
+
+---
+
 ## Department breakdowns
 
 **Add them to your Viva query.** Under *"Select spending policy and employee attributes"*, tick
@@ -35,8 +55,8 @@ the people in the data.
 <details>
 <summary>If you can't change the query</summary>
 
-Set `EntraCsvPath` to a directory export from the Microsoft Entra admin centre
-(Users → Download users). It's a fallback: Viva's own attributes are always used first when present.
+Drop a directory export from the Microsoft Entra admin centre (Users → Download users) into your
+`DataFolder`. It's a fallback: Viva's own attributes are always used first when present.
 
 **[More on org data →](../docs/ORG-DATA.md)**
 
@@ -46,13 +66,22 @@ Set `EntraCsvPath` to a directory export from the Microsoft Entra admin centre
 
 ## Adding the other products
 
-Optional. Fill in the matching paths if you have them:
+Optional. Set **`DataFolder`** to a folder holding whatever exports you have and drop the files in —
+they're found by name, so nothing needs renaming and anything you don't have is skipped.
 
-| Product | Parameter |
+| Product | Files it looks for |
 |---|---|
-| Copilot Studio | `StudioTenantCsvPath`, `StudioAgentCsvPath`, `StudioUserCsvPath` |
-| GitHub Copilot | `GitHubUsageCsvPath`, `GitHubUserMapCsvPath` |
-| Azure AI Foundry | `AzureAiSpendCsvPath`, `AzureAiTokensCsvPath` |
+| Copilot Studio | `StudioTenantDaily`, `StudioPerAgent`, `StudioPerUser` |
+| GitHub Copilot | `GitHubAiUsage`, `GitHubUserMap` |
+| Azure AI Foundry | `AzureAiSpendDaily`, `AzureAiTokensDaily` |
+| Org attributes | `entra` / `orgdata` / `users` — only if you can't add them to the Viva query |
+
+Leave `DataFolder` alone if all you have is Cowork. The connector covers it and those pages simply
+stay empty, which is a supported state.
+
+> Foundry exports often land somewhere else entirely, so `AzureAiSpendCsvPath` and
+> `AzureAiTokensCsvPath` remain as an explicit escape hatch — set either one and it wins over the
+> folder.
 
 **[Where to get each one →](../docs/DATA-SOURCES.md)**
 
