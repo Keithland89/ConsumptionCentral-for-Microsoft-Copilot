@@ -53,6 +53,38 @@ you just can't split them by team.
 
 ---
 
+## One admin setting connects everything
+
+> ### **Without it, each product is an island.**
+
+Viva Insights ships Copilot data **de-identified by default** — the person arrives as a hashed
+`PersonId`, not an email address. Every other source (Copilot Studio, GitHub Copilot, your Entra
+export) is keyed on **UserPrincipalName**. So until identification is on, there is nothing to join
+them with.
+
+| | Cowork / Work IQ totals | Per-person view across products | Department breakdowns |
+|---|---|---|---|
+| **De-identified** *(default)* | ✅ Correct | ❌ | ❌ |
+| **Identified** | ✅ Correct | ✅ | ✅ |
+
+**Turning it on** — a **Global Administrator** or **AI Administrator**, about two minutes:
+
+1. [Microsoft 365 admin center](https://admin.cloud.microsoft/?#/viva/featureAccessManagement) →
+   **Settings → Viva → Feature access management**
+2. **Create a policy** — App **Viva Insights**, Feature **Identification**
+3. Access **On**, applied to everyone or to a named analyst group
+4. Allow **up to 24 hours** to take effect
+
+Then re-run your export, or point the connector at the identified query.
+**[Full steps and the two query names →](docs/DATA-SOURCES.md#identified-vs-de-identified)**
+
+**Before you switch it on:** this processes personal data. Check whether per-person reporting needs
+works-council consent or employee notification where you operate — your organisation is the data
+controller, not Microsoft. The Power BI connector also **does not enforce Viva's minimum group
+size**, so any privacy threshold you rely on has to be applied in the report yourself.
+
+---
+
 ## Pick a path
 
 | | Best when | Setup |
@@ -102,6 +134,7 @@ Both are at the [top of this page](#watch-first) and play inline.
 
 | | |
 |---|---|
+| **[How to read the dashboard](docs/INTERPRETING.md)** | **What every page and figure means — start here if a number looks odd** |
 | [Where the data comes from](docs/DATA-SOURCES.md) | Click-paths and permissions for every export |
 | [Department breakdowns](docs/ORG-DATA.md) | How org attributes get in, and what happens without them |
 | [Rates and pricing](docs/COMMERCIAL-TERMS.md) | What to set and where to find it |

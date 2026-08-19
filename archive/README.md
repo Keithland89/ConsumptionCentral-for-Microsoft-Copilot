@@ -9,4 +9,5 @@ only and are not maintained.
 
 | File | Notes |
 |---|---|
-| `Consumption Central - * 2026-08-15.pbit` | Fixes for [#5](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues/5) and [#6](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues/6). Superseded by the 16 August build, which adds the per-product usage cohorts and defaults Group By to Department. |
+| `Consumption Central - * 2026-08-16.pbit` | Per-product usage cohorts, and Group By defaulting to Department. Superseded by the 19 August build, which adds the in-report reading guide and its navigation buttons. |
+| `Consumption Central - * 2026-08-15.pbit` | Fixes for [#5](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues/5) and [#6](https://github.com/microsoft/ConsumptionCentral-for-Microsoft-Copilot/issues/6). |

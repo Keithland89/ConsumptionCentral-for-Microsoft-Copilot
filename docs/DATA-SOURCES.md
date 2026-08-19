@@ -74,9 +74,35 @@ AI Administrator is sufficient, which is a much smaller ask.)*
 
 **Identifiable export is a public preview that processes personal data.** Read the "Previews" section
 of the Data Protection Addendum, and check whether per-person reporting needs works-council consent
-in your jurisdiction, before you turn it on.
+in your jurisdiction, before you turn it on. Note also that the **Power BI connector does not enforce
+Viva's minimum group size** — if you rely on that threshold, you have to apply it in the report
+yourself. Identification is **not available in GCC-High or DoD**. End-user opt-out does *not* apply
+to Copilot usage data, which stays at row level either way.
 
-**Consumption Central handles both shapes automatically** — you do not need to decide before starting.
+Allow **up to 24 hours** for the policy to take effect, then re-export. Existing exports are not
+re-keyed retrospectively — only runs after the policy is live carry the identifiable fields.
+
+### What de-identified actually costs you
+
+**Consumption Central reads both shapes without complaint**, so nothing breaks and no figure is
+wrong. But de-identified data cannot be joined to anything keyed on a person, and that is most of
+the cross-product value:
+
+| | De-identified | Identified |
+|---|---|---|
+| Cowork / Work IQ credits and cost | ✅ | ✅ |
+| Spending-policy limits and budget pages | ✅ | ✅ |
+| **One person's spend across Cowork + Studio + GitHub** | ❌ | ✅ |
+| **Department, job title, city, manager breakdowns** | ❌ | ✅ |
+| **All Products page as a per-person view** | ❌ | ✅ |
+
+The reason is simply that there is no shared key: Studio arrives keyed on `User_Email`, GitHub on
+`Username` (bridged to UPN by `GitHubUserMap.csv`), and your Entra export on `userPrincipalName` —
+while a de-identified Viva export carries only a hash.
+
+On the CSV path a de-identified export ships `PersonPolicyMap.csv`, which carries `PersonId`,
+`PeopleHistoricalId` **and** `userPrincipalName` on the same row. **Include that file and the join
+works** — it is the one bridge that resolves the hash. Without it, Cowork stands alone.
 
 ### Grain and history
 
